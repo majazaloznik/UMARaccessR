@@ -20,3 +20,19 @@ DBI::dbGetQuery(con, sprintf(
 }
 source("tests/testthat/sandbox/SELECT-526b8c.R")$valu
 
+
+#' Get series name from vintage ID
+#'
+#' @inheritParams common_parameters
+#' @param vintage numeric id of vintage
+#'
+#' @return character vector of series name.
+#' @export
+
+get_series_name <- function(vintage, con) {
+  DBI::dbGetQuery(con, sprintf(
+    "select name_long from vintage
+    left join series
+    on vintage.series_id=series.id
+    where vintage.id = %f", vintage))
+}
