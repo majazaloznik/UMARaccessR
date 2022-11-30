@@ -23,6 +23,8 @@ source("tests/testthat/sandbox/SELECT-526b8c.R")$valu
 
 #' Get series name from vintage ID
 #'
+#' Joins vintage table with series to get the series name_long.
+#'
 #' @inheritParams common_parameters
 #' @param vintage numeric id of vintage
 #'
@@ -36,3 +38,25 @@ get_series_name <- function(vintage, con) {
     on vintage.series_id=series.id
     where vintage.id = %f", vintage))
 }
+
+#' Get table name from vintage ID
+#'
+#' Joins the vintage table with the series table to get the
+#' table id and then looks up the name in the table table.
+#'
+#'
+#' @inheritParams common_parameters
+#' @param vintage numeric id of vintage
+#'
+#' @return character vector of table name.
+#' @export
+#'
+get_table_name <- function(vintage, con) {
+  DBI::dbGetQuery(con, sprintf(
+    "select name from \"table\" where id =
+    (select series.table_id from vintage
+     left join series
+     on vintage.series_id=series.id
+     where vintage.id = %f)", vintage))
+}
+

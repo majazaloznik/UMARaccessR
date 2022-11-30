@@ -15,5 +15,5 @@ get_series_name(vintage, con)
 character vector of series name.
 }
 \description{
-Get series name from vintage ID
+Joins vintage table with series to get the series name_long.
 }
