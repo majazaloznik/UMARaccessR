@@ -15,3 +15,5 @@ dittodb::with_mock_db({
     expect_true(grepl("storitvene dejavnosti", out[1,1]))
   })
 })
+`use_coverage(type = c("codecov"))`
+`usethis::use_github_action("test-coverage")`
