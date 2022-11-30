@@ -11,10 +11,11 @@ dittodb::with_mock_db({
     out <- get_unit(1625, con)
     expect_equal(out[1,1], "indeks")
     out <- get_series_name(1625, con)
-    expect_equal(nchar(out[1,1]), 100)
     expect_true(grepl("storitvene dejavnosti", out[1,1]))
     out <- get_table_name(1625, con)
     expect_true(grepl("Indeksi nominalnega", out[1,1]))
+    out <- get_data_points(1625, con)
+    expect_true(all(dim(out)==c(272, 3)))
   })
 })
 
