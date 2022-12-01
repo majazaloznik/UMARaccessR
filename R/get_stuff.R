@@ -9,17 +9,16 @@
 #'
 #' @return character vector of vintage name.
 #' @export
-
 get_unit <- function(vintage, con) {
 DBI::dbGetQuery(con, sprintf(
   "select name from unit where id =
   (select series.unit_id from vintage
   left join series
   on vintage.series_id=series.id
-  where vintage.id = %f)", vintage))
+  where vintage.id = %f)", vintage)) -> unit
+  if (identical(unit, character(0))) unit <- NULL
+  return(unit)
 }
-source("tests/testthat/sandbox/SELECT-526b8c.R")$valu
-
 
 #' Get series name from vintage ID
 #'

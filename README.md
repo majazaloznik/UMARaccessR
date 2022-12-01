@@ -6,7 +6,7 @@
 [![Codecov test coverage](https://codecov.io/gh/majazaloznik/UMARaccessR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/majazaloznik/UMARaccessR?branch=main)
 <!-- badges: end -->
 
-The goal of UMARaccessR is to ...
+Functions for accessing and retrieving stuff from the UMAR database
 
 ## Installation
 
@@ -16,13 +16,3 @@ You can install the development version of UMARaccessR from [GitHub](https://git
 # install.packages("devtools")
 devtools::install_github("majazaloznik/UMARaccessR")
 ```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(UMARaccessR)
-## basic example code
-```
-
