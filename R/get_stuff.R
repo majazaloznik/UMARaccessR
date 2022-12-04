@@ -84,19 +84,17 @@ get_interval <- function(vintage, con) {
 
 #' Get and prep the datapoint table for a single vintage
 #'
-#' Gets the data periods and values for a single vintage, converting the periods
-#' to real dates for easier plotting.
+#' Gets the data periods and values for a single vintage.
 #'
 #' @inheritParams common_parameters
 #' @param vintage numeric id of vintage
 #'
-#' @return a three column dataframe with the period_id, period as date and value for all
+#' @return a two column dataframe with the period_id, and value for all
 #' the datapoints in that vintage.
 #' @export
 #'
 get_data_points <- function(vintage, con){
   dbGetQuery(con, sprintf(
     "select period_id, value from data_points where vintage_id = %f", vintage)) %>%
-    dplyr::mutate(period = lubridate::ym(period_id)) %>%
     dplyr::arrange(period)
 }

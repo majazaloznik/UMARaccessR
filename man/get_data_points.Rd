@@ -12,10 +12,9 @@ get_data_points(vintage, con)
 \item{con}{PostgreSQL connection object created by the RPostgres package.}
 }
 \value{
-a three column dataframe with the period_id, period as date and value for all
+a two column dataframe with the period_id, and value for all
 the datapoints in that vintage.
 }
 \description{
-Gets the data periods and values for a single vintage, converting the periods
-to real dates for easier plotting.
+Gets the data periods and values for a single vintage.
 }
