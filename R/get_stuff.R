@@ -45,7 +45,6 @@ get_series_name <- function(vintage, con) {
 #'
 #'
 #' @inheritParams common_parameters
-#' @param vintage numeric id of vintage
 #'
 #' @return character vector of table name.
 #' @export
