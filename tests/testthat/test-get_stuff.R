@@ -9,15 +9,17 @@ dittodb::with_mock_db({
 
   test_that("mock tests for get_stuff", {
     out <- get_unit(1625, con)
-    expect_equal(out[1,1], "indeks")
+    expect_equal(out, "indeks")
     out <- get_unit(2532, con)
-    expect_true(is.na(out[1,1]))
+    expect_true(is.na(out))
     out <- get_series_name(1625, con)
     expect_true(grepl("storitvene dejavnosti", out[1,1]))
     out <- get_table_name(1625, con)
     expect_true(grepl("Indeksi nominalnega", out[1,1]))
     out <- get_data_points(1625, con)
     expect_true(all(dim(out)==c(272, 3)))
+    out <- get_interval(1625, con)
+    expect_equal(out, "M")
   })
 })
 

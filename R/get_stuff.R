@@ -17,7 +17,7 @@ DBI::dbGetQuery(con, sprintf(
   on vintage.series_id=series.id
   where vintage.id = %f)", vintage)) -> unit
   if (identical(unit, character(0))) unit <- NULL
-  return(unit)
+  return(unit[1,1])
 }
 
 #' Get series name from vintage ID
@@ -59,6 +59,28 @@ get_table_name <- function(vintage, con) {
      where vintage.id = %f)", vintage))
 }
 
+#' Get table interval from vintage ID
+#'
+#' Joins the vintage table with the series table to get the
+#' interval id, which is alphanumeric e.g. M for monthly etc.
+#'
+#'
+#' @inheritParams common_parameters
+#' @param vintage numeric id of vintage
+#'
+#' @return character vector of interval id
+#' @export
+#'
+#'
+get_interval <- function(vintage, con) {
+  DBI::dbGetQuery(con, sprintf(
+    "select interval_id from series where id =
+    (select series.id from vintage
+     left join series
+     on vintage.series_id=series.id
+     where vintage.id = %f)", vintage)) -> interval
+  return(interval[1,1])
+}
 
 #' Get and prep the datapoint table for a single vintage
 #'
