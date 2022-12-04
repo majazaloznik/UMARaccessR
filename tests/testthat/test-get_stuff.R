@@ -17,7 +17,7 @@ dittodb::with_mock_db({
     out <- get_table_name(1625, con)
     expect_true(grepl("Indeksi nominalnega", out[1,1]))
     out <- get_data_points(1625, con)
-    expect_true(all(dim(out)==c(272, 3)))
+    expect_true(all(dim(out)==c(272, 2)))
     out <- get_interval(1625, con)
     expect_equal(out, "M")
   })
