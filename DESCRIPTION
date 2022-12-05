@@ -22,3 +22,5 @@ Imports:
     RPostgres (>= 1.4.4),
     stringr (>= 1.4.0),
     UMARvisualisR (>= 0.1.0)
+Remotes:
+  majazaloznik/UMARvisualisR 
