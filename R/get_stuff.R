@@ -93,7 +93,7 @@ get_interval <- function(vintage, con) {
 #' @export
 #'
 get_data_points <- function(vintage, con){
-  dbGetQuery(con, sprintf(
+  DBI::dbGetQuery(con, sprintf(
     "select period_id, value from data_points where vintage_id = %f", vintage)) %>%
     dplyr::arrange(period_id)
 }
