@@ -3,8 +3,6 @@
 #' Taking the datapoints table or any dataframe with a period_id column,
 #' the function parses it as a date e.g. 2022M02 becomes 2022-02-01.
 #' Currently works for months and quarters. Gets the interval from the database.
-#' Based on lubridate functions `ym` and `yq`, which give you the first day of the period.
-#'
 #'
 #' @inheritParams common_parameters
 #' @param interval "M" or "Q" right now, in practice  `interval <- get_interval(vintage, con)`

@@ -18,5 +18,8 @@ teh same dataframe with an added period column
 Taking the datapoints table or any dataframe with a period_id column,
 the function parses it as a date e.g. 2022M02 becomes 2022-02-01.
 Currently works for months and quarters. Gets the interval from the database.
+<<<<<<< HEAD
 Based on lubridate functions `ym` and `yq`, which give you the first day of the period.
+=======
+>>>>>>> 827ceaaba78b9cf9f0dd4e92b06c6093eeaecdf3
 }
