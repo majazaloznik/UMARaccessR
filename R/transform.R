@@ -9,7 +9,7 @@
 #' @param interval "M" or "Q" right now, in practice  `interval <- get_interval(vintage, con)`
 #' @param df a dataframe with at least a period_id column
 #'
-#' @return teh same dataframe with an added period column
+#' @return the same dataframe with an added period column
 #' @export
 #'
 add_date_from_period_id <- function(df, interval) {

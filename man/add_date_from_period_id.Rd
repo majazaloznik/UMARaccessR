@@ -12,7 +12,7 @@ add_date_from_period_id(df, interval)
 \item{interval}{"M" or "Q" right now, in practice  `interval <- get_interval(vintage, con)`}
 }
 \value{
-teh same dataframe with an added period column
+the same dataframe with an added period column
 }
 \description{
 Taking the datapoints table or any dataframe with a period_id column,
