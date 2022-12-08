@@ -29,7 +29,8 @@ add_date_from_period_id <- function(df, interval) {
 #' Prepare data needed for a univariate line chart
 #'
 #' Given the vintage id and a connection to the database, this function
-#' gets the datapoints, and the unit, prepares the titles.
+#' gets the datapoints, and the unit, prepares the titles. The returned list
+#' is th einput for the plotting function \link[UMARvisualisR]{univariate_line_chart}.
 #'
 #' @inheritParams common_parameters
 #'
@@ -39,10 +40,10 @@ add_date_from_period_id <- function(df, interval) {
 #' @export
 #'
 prep_single_line <- function(vintage, con){
-  single <- add_date_from_period_id(get_data_points(vintage, con),
-                                    get_interval(vintage, con))
-  unit <- UMARvisualisR::first_up(get_unit(vintage, con))
-  main_title <- UMARvisualisR::wrap_string(get_table_name(vintage, con))
-  sub_title <- UMARvisualisR::wrap_string(get_series_name(vintage, con))
+  single <- add_date_from_period_id(get_data_points_from_vintage(vintage, con),
+                                    get_interval_from_vintage(vintage, con))
+  unit <- UMARvisualisR::first_up(get_unit_from_vintage(vintage, con))
+  main_title <- UMARvisualisR::wrap_string(get_table_name_from_vintage(vintage, con))
+  sub_title <- UMARvisualisR::wrap_string(get_series_name_from_vintage(vintage, con))
 return(list(single, unit, main_title, sub_title))
 }

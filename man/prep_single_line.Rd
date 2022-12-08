@@ -18,5 +18,6 @@ subtitles (default 100 chars max 3 lines).
 }
 \description{
 Given the vintage id and a connection to the database, this function
-gets the datapoints, and the unit, prepares the titles.
+gets the datapoints, and the unit, prepares the titles. The returned list
+is th einput for the plotting function \link[UMARvisualisR]{univariate_line_chart}.
 }

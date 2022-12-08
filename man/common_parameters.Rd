@@ -9,6 +9,8 @@
 \item{schema}{character schema name, default is "test_platform"}
 
 \item{vintage}{numeric id of vintage}
+
+\item{series}{numeric id of series}
 }
 \description{
 Parameter definitions for common parameters
