@@ -11,15 +11,16 @@
 #'
 #' @return the same dataframe with an added period column
 #' @export
+#' @importFrom rlang .data
 #'
 add_date_from_period_id <- function(df, interval) {
   df %>%
     dplyr::mutate(interval = interval) %>%
     dplyr::mutate(period =
                     dplyr::if_else(interval == "M",
-                                   lubridate::ym(period_id),
+                                   lubridate::ym(.data$period_id),
                                    dplyr::if_else(interval == "Q",
-                                                  lubridate::yq(period_id), NULL))) %>%
+                                                  lubridate::yq(.data$period_id), NULL))) %>%
     dplyr::select(-interval)
 }
 

@@ -10,8 +10,6 @@ get_interval_from_series(series, con)
 \item{series}{numeric id of series}
 
 \item{con}{PostgreSQL connection object created by the RPostgres package.}
-
-\item{vintage}{numeric id of vintage}
 }
 \value{
 character vector of interval id

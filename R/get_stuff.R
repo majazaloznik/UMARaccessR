@@ -134,7 +134,6 @@ get_interval_from_vintage <- function(vintage, con) {
 #'
 #'
 #' @inheritParams common_parameters
-#' @param vintage numeric id of vintage
 #'
 #' @return character vector of interval id
 #' @export
@@ -180,11 +179,12 @@ get_vintage_from_series <- function(series, con, date_valid = NULL){
 #' @return a two column dataframe with the period_id, and value for all
 #' the datapoints in that vintage.
 #' @export
-#'
+#' @importFrom rlang .data
+
 get_data_points_from_vintage <- function(vintage, con){
   DBI::dbGetQuery(con, sprintf(
     "select period_id, value from data_points where vintage_id = %f", vintage)) %>%
-    dplyr::arrange(period_id)
+    dplyr::arrange(.data$period_id)
 }
 
 
