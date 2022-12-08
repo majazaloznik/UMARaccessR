@@ -34,6 +34,8 @@ dittodb::with_mock_db({
     expect_equal(out[1,1], as.POSIXct("2022-10-27 08:30:00",  tz = "UTC"))
     out <- get_last_period_from_vintage (1625, con)
     expect_equal(out[1,1], "2022M09")
+    out <- get_last_period_from_vintage (351, con)
+    expect_equal(out[1,1], as.character(NA))
   })
 })
 

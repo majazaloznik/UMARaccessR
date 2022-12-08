@@ -202,8 +202,16 @@ get_date_published_from_vintage <- function(vintage, con){
     "select published from vintage where id = %f", vintage))
 }
 
+#' Get the most recent period for whic a vintage has data
+#'
+#' The vintage must have an actual non null value for that period.
+#'
+#' @inheritParams common_parameters
+#'
+#' @return character of period id e.g "2022M03"
+#' @export
 get_last_period_from_vintage <- function(vintage, con){
   DBI::dbGetQuery(con, sprintf(
-    "select period_id from data_points where vintage_id = %f
+    "select period_id from data_points where vintage_id = %f and value is not null
     order by period_id desc limit 1", vintage))
 }
