@@ -31,7 +31,7 @@ dittodb::with_mock_db({
     out <- get_vintage_from_series(2389, con)
     expect_equal(out[1,1], 11814)
     out <- get_date_published_from_vintage(1625, con)
-    expect_equal(out[1,1], as.POSIXct("2022-10-27 08:30:00",  tz = "UTC"))
+    expect_equal(out[1,1], as.POSIXct("2022-10-27 10:30:00",  tz = "CET"))
     out <- get_last_period_from_vintage (1625, con)
     expect_equal(out[1,1], "2022M09")
     out <- get_last_period_from_vintage (351, con)

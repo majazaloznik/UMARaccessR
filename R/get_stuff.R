@@ -199,7 +199,8 @@ get_data_points_from_vintage <- function(vintage, con){
 #' @importFrom rlang .data
 get_date_published_from_vintage <- function(vintage, con){
   DBI::dbGetQuery(con, sprintf(
-    "select published from vintage where id = %f", vintage))
+    "select published from vintage where id = %f", vintage)) %>%
+    lubridate::with_tz( "CET")
 }
 
 #' Get the most recent period for whic a vintage has data
