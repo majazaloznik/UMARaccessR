@@ -46,5 +46,7 @@ prep_single_line <- function(vintage, con){
   unit <- UMARvisualisR::first_up(get_unit_from_vintage(vintage, con))
   main_title <- UMARvisualisR::wrap_string(get_table_name_from_vintage(vintage, con))
   sub_title <- UMARvisualisR::wrap_string(get_series_name_from_vintage(vintage, con))
-return(list(single, unit, main_title, sub_title))
+  updated <- get_date_published_from_vintage(vintage, con)
+  last_period <- get_last_period_from_vintage(vintage, con)
+return(list(single, unit, main_title, sub_title, updated, last_period))
 }
