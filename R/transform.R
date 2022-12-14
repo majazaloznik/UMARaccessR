@@ -50,5 +50,5 @@ prep_single_line <- function(vintage, con){
   updated <- get_date_published_from_vintage(vintage, con)
   last_period <- get_last_period_from_vintage(vintage, con)
   interval <- get_interval_from_vintage(vintage, con)
-return(list(single, unit, main_title, sub_title, updated, last_period, interval))
+  mget(c("single", "unit", "main_title", "sub_title", "updated", "last_period", "interval"))
 }
