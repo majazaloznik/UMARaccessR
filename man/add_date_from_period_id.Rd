@@ -9,7 +9,7 @@ add_date_from_period_id(df, interval)
 \arguments{
 \item{df}{a dataframe with at least a period_id column}
 
-\item{interval}{"M" or "Q" right now, in practice  `interval <- get_interval(vintage, con)`}
+\item{interval}{"M" or "Q" right now, in practice  `interval <- get_interval_from_vintage(vintage, con)`}
 }
 \value{
 the same dataframe with an added period column

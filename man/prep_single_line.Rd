@@ -14,10 +14,11 @@ prep_single_line(vintage, con)
 \value{
 a list with the dataframe with values, period_ids and periods as the
 first element, a character unit name as second, and the row wrapped main and
-subtitles (default 100 chars max 3 lines).
+subtitles (default 100 chars max 3 lines), the date and time of the last update,
+the last period and the interval.
 }
 \description{
 Given the vintage id and a connection to the database, this function
 gets the datapoints, and the unit, prepares the titles. The returned list
-is th einput for the plotting function \link[UMARvisualisR]{univariate_line_chart}.
+is the input for the plotting function \link[UMARvisualisR]{univariate_line_chart}.
 }

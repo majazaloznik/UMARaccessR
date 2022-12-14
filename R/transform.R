@@ -6,7 +6,7 @@
 #' NB: Based on lubridate functions `ym` and `yq`, which give you the first day of the period.
 #'
 #'
-#' @param interval "M" or "Q" right now, in practice  `interval <- get_interval(vintage, con)`
+#' @param interval "M" or "Q" right now, in practice  `interval <- get_interval_from_vintage(vintage, con)`
 #' @param df a dataframe with at least a period_id column
 #'
 #' @return the same dataframe with an added period column
@@ -31,13 +31,14 @@ add_date_from_period_id <- function(df, interval) {
 #'
 #' Given the vintage id and a connection to the database, this function
 #' gets the datapoints, and the unit, prepares the titles. The returned list
-#' is th einput for the plotting function \link[UMARvisualisR]{univariate_line_chart}.
+#' is the input for the plotting function \link[UMARvisualisR]{univariate_line_chart}.
 #'
 #' @inheritParams common_parameters
 #'
 #' @return a list with the dataframe with values, period_ids and periods as the
 #' first element, a character unit name as second, and the row wrapped main and
-#' subtitles (default 100 chars max 3 lines).
+#' subtitles (default 100 chars max 3 lines), the date and time of the last update,
+#' the last period and the interval.
 #' @export
 #'
 prep_single_line <- function(vintage, con){
@@ -48,5 +49,6 @@ prep_single_line <- function(vintage, con){
   sub_title <- UMARvisualisR::wrap_string(get_series_name_from_vintage(vintage, con))
   updated <- get_date_published_from_vintage(vintage, con)
   last_period <- get_last_period_from_vintage(vintage, con)
-return(list(single, unit, main_title, sub_title, updated, last_period))
+  interval <- get_interval_from_vintage(vintage, con)
+return(list(single, unit, main_title, sub_title, updated, last_period, interval))
 }
