@@ -20,7 +20,7 @@ dittodb::with_mock_db({
 
   test_that("mock tests for prepping data for plot", {
     out <- prep_single_line(1625, con)
-    expect_equal(length(out), 6)
+    expect_equal(length(out), 7)
     expect_equal(dim(out[[1]]), c(273, 3))
   })
 })
