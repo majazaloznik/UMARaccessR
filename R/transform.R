@@ -35,7 +35,7 @@ add_date_from_period_id <- function(df, interval) {
 #'
 #' @inheritParams common_parameters
 #'
-#' @return a list with the dataframe with values, period_ids and periods as the
+#' @return a list with the data frame with values, period_ids and periods as the
 #' first element, a character unit name as second, and the row wrapped main and
 #' subtitles (default 100 chars max 3 lines), the date and time of the last update,
 #' the last period and the interval.
