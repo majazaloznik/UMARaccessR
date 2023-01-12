@@ -169,6 +169,30 @@ get_vintage_from_series <- function(series, con, date_valid = NULL){
     order by published desc limit 1", series, validity))
 }
 
+#' Get vintage id from series code
+#'
+#' Gets the vintage based on the series code, by default the most recent one,
+#' otherwise the one that was valid on the date passed with `date_valid`.
+#'
+#' @inheritParams common_parameters
+#' @param series_code the characther code for each series (not the id)
+#' @param date_valid date when the vintage was valid if none is given most recent
+#' i.e. currently valid vintage is returned.
+#'
+#' @return numeric vintage id.
+#' @export
+#'
+get_vintage_from_series_code <- function(series_code, con, date_valid = NULL){
+  if(!is.null(date_valid)){
+    validity <- sprintf("and published < '%s'", date_valid )} else {
+      validity <- " "}
+  DBI::dbGetQuery(con, sprintf(
+    "select vintage.id from vintage join series
+on vintage.series_id = series.id
+where series.code = '%s' %s
+order by published desc limit 1", series_code, validity))
+}
+
 #' Get and prep the datapoint table for a single vintage
 #'
 #' Gets the data periods and values for a single vintage.

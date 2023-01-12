@@ -1,6 +1,6 @@
-# library(DBI)
-# library(RPostgres)
-# library(dittodb)
+library(DBI)
+library(RPostgres)
+library(dittodb)
 #
 #
 # start_db_capturing()
@@ -189,3 +189,14 @@
 # on.exit(dbDisconnect)
 # out <- get_last_period_from_vintage (1625, con)
 # stop_db_capturing()
+start_db_capturing()
+con <- dbConnect(RPostgres::Postgres(),
+                 dbname = "sandbox",
+                 host = "localhost",
+                 port = 5432,
+                 user = "mzaloznik",
+                 password = Sys.getenv("PG_local_MAJA_PSW"))
+dbExecute(con, "set search_path to test_platform")
+on.exit(dbDisconnect)
+out <- get_vintage_from_series_code("SURS--1700104S--2--2--Q", con)
+stop_db_capturing()
