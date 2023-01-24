@@ -7,6 +7,8 @@
 get_vintage_from_series_code(series_code, con, date_valid = NULL)
 }
 \arguments{
+\item{series_code}{the characther code for each series (not the id)}
+
 \item{con}{PostgreSQL connection object created by the RPostgres package.}
 
 \item{date_valid}{date when the vintage was valid if none is given most recent
