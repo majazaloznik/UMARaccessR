@@ -2,6 +2,8 @@
 
 export("%>%")
 export(add_date_from_period_id)
+export(create_selection_excel)
+export(get_all_series_wtable_names)
 export(get_data_points_from_vintage)
 export(get_date_published_from_vintage)
 export(get_interval_from_series)

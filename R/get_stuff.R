@@ -240,3 +240,34 @@ get_last_period_from_vintage <- function(vintage, con){
     "select period_id from data_points where vintage_id = %f and value is not null
     order by period_id desc limit 1", vintage))
 }
+
+
+#' Get all series in the database
+#'
+#' Extracts a dataframe with all the series in the database joined together
+#' with their table names and units. Used in \link[UMARaccessR]{create_selection_excel}. Cannae be
+#' bothered with testing.
+#'
+#' @inheritParams common_parameters
+#'
+#' @return dataframe with a row for each series
+#' @export
+#'
+get_all_series_wtable_names <- function(con){
+  dplyr::tbl( con, "series") %>%
+    dplyr::left_join(tbl( con, "table"), by = c("table_id"= "id")) %>%
+    dplyr::select(-url, -source_id, -description, -notes) %>%
+    dplyr::left_join(tbl(con, "unit"), by = c("unit_id"="id")) %>%
+    dplyr::rename(unit = name.y,
+           table_code = code.y,
+           series_code = code.x,
+           table_name = name.x,
+           series_name = name_long) %>%
+    dplyr::select(table_code, table_name,
+           series_code, series_name,
+           unit, interval_id) %>%
+    dplyr::arrange(table_code, series_code) %>%
+    dplyr::collect() -> series_df
+}
+
+
