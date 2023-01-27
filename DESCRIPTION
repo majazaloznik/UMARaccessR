@@ -20,6 +20,7 @@ Imports:
     dplyr (>= 1.0.9),
     lubridate (>= 1.8.0),
     magrittr (>= 2.0.3),
+    openxlsx,
     rlang (>= 1.0.3),
     RPostgres (>= 1.4.4),
     stringr (>= 1.4.0)
