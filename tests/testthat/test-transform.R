@@ -7,4 +7,6 @@ test_that("transform works fine", {
   out <- add_date_from_period_id(df, "Q")
   expect_equal(out$period[1], as.Date("2022-04-01"))
 
-})
+
+
+  })
