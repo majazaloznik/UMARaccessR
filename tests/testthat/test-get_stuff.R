@@ -40,6 +40,8 @@ dittodb::with_mock_db({
     expect_equal(out[1,1], as.character(NA))
     out <- get_source_code_from_source_name ("MF", con)
     expect_equal(out[1,1], 2)
+    out <- get_table_id_from_table_code("DP", con)
+    expect_equal(out[1,1], 24)
   })
 })
 

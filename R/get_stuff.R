@@ -282,3 +282,17 @@ get_source_code_from_source_name <- function(name, con){
   DBI::dbGetQuery(con, sprintf(
     "select id from source where name = '%s'", name))
 }
+
+
+#' Get table id from table code
+#'
+#'
+#' @inheritParams common_parameters
+#' @param code character string with source name
+#'
+#' @return numeric code
+#' @export
+get_table_id_from_table_code <- function(code, con){
+  DBI::dbGetQuery(con, sprintf(
+    "select id from \"table\" where code = '%s'", code))
+}

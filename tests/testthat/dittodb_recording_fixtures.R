@@ -200,15 +200,29 @@ library(dittodb)
 # on.exit(dbDisconnect)
 # out <- get_vintage_from_series_code("SURS--1700104S--2--2--Q", con)
 # stop_db_capturing()
+# start_db_capturing()
+# con <- dbConnect(RPostgres::Postgres(),
+#                  dbname = "sandbox",
+#                  host = "localhost",
+#                  port = 5432,
+#                  user = "mzaloznik",
+#                  password = Sys.getenv("PG_local_MAJA_PSW"))
+# dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# out <- get_source_code_from_source_name ("MF", con)
+# stop_db_capturing()
+#
+# start_db_capturing()
+# con <- dbConnect(RPostgres::Postgres(),
+#                  dbname = "sandbox",
+#                  host = "localhost",
+#                  port = 5432,
+#                  user = "mzaloznik",
+#                  password = Sys.getenv("PG_local_MAJA_PSW"))
+# dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# out <- get_table_id_from_table_code("DP", con)
+# stop_db_capturing()
 
-start_db_capturing()
-con <- dbConnect(RPostgres::Postgres(),
-                 dbname = "sandbox",
-                 host = "localhost",
-                 port = 5432,
-                 user = "mzaloznik",
-                 password = Sys.getenv("PG_local_MAJA_PSW"))
-dbExecute(con, "set search_path to test_platform")
-on.exit(dbDisconnect)
-out <- get_source_code_from_source_name ("MF", con)
-stop_db_capturing()
+
+
