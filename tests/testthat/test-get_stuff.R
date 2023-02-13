@@ -38,6 +38,8 @@ dittodb::with_mock_db({
     expect_equal(out[1,1], "2022M09")
     out <- get_last_period_from_vintage (351, con)
     expect_equal(out[1,1], as.character(NA))
+    out <- get_source_code_from_source_name ("MF", con)
+    expect_equal(out[1,1], 2)
   })
 })
 

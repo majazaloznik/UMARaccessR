@@ -270,4 +270,15 @@ get_all_series_wtable_names <- function(con){
     dplyr::collect() -> series_df
 }
 
-
+#' Get source code from source name
+#'
+#'
+#' @inheritParams common_parameters
+#' @param name character string with source name
+#'
+#' @return numeric code
+#' @export
+get_source_code_from_source_name <- function(name, con){
+  DBI::dbGetQuery(con, sprintf(
+    "select id from source where name = '%s'", name))
+}
