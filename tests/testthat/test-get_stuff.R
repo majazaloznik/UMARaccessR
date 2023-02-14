@@ -41,7 +41,9 @@ dittodb::with_mock_db({
     out <- get_source_code_from_source_name ("MF", con)
     expect_equal(out[1,1], 2)
     out <- get_table_id_from_table_code("DP", con)
-    expect_equal(out[1,1], 24)
+    expect_equal(as.numeric(out[1,1]), 24)
+    out <- get_dim_id_from_table_id(24, "Konto", con)
+    expect_equal(as.numeric(out[1,1]), 73)
   })
 })
 

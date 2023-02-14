@@ -296,3 +296,17 @@ get_table_id_from_table_code <- function(code, con){
   DBI::dbGetQuery(con, sprintf(
     "select id from \"table\" where code = '%s'", code))
 }
+
+#' Get dimension id from table id and dimension name
+#'
+#'
+#' @inheritParams common_parameters
+#' @param id numeric table id
+#' @param dimension character string with dimension name
+#'
+#' @return numeric code
+#' @export
+get_dim_id_from_table_id <- function(id, dimension, con){
+  DBI::dbGetQuery(con, sprintf(
+    "select id from table_dimensions where table_id = %f and dimension = '%s'", id, dimension))
+}

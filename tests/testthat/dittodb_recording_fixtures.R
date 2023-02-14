@@ -223,6 +223,15 @@ library(dittodb)
 # on.exit(dbDisconnect)
 # out <- get_table_id_from_table_code("DP", con)
 # stop_db_capturing()
-
-
+# start_db_capturing()
+# con <- dbConnect(RPostgres::Postgres(),
+#                  dbname = "sandbox",
+#                  host = "localhost",
+#                  port = 5432,
+#                  user = "mzaloznik",
+#                  password = Sys.getenv("PG_local_MAJA_PSW"))
+# dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# out <- get_dim_id_from_table_id(24, "Konto", con)
+# stop_db_capturing()
 
