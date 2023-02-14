@@ -44,6 +44,8 @@ dittodb::with_mock_db({
     expect_equal(as.numeric(out[1,1]), 24)
     out <- get_dim_id_from_table_id(24, "Konto", con)
     expect_equal(as.numeric(out[1,1]), 73)
+    out <- get_unit_id_from_unit_name("eur", con)
+    expect_equal(nrow(out), 0)
   })
 })
 

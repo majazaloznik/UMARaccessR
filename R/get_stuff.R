@@ -310,3 +310,17 @@ get_dim_id_from_table_id <- function(id, dimension, con){
   DBI::dbGetQuery(con, sprintf(
     "select id from table_dimensions where table_id = %f and dimension = '%s'", id, dimension))
 }
+
+
+#' Get unit id from name
+#'
+#'
+#' @inheritParams common_parameters
+#' @param name character name of unit
+#'
+#' @return numeric id
+#' @export
+get_unit_id_from_unit_name <- function(name, con){
+  DBI::dbGetQuery(con, sprintf(
+    "select id from unit where name = '%s'", name))
+}
