@@ -293,8 +293,9 @@ get_source_code_from_source_name <- function(name, con){
 #' @return numeric code
 #' @export
 get_table_id_from_table_code <- function(code, con){
-  DBI::dbGetQuery(con, sprintf(
+  x <- DBI::dbGetQuery(con, sprintf(
     "select id from \"table\" where code = '%s'", code))
+  as.numeric(x[1,1])
 }
 
 #' Get dimension id from table id and dimension name
@@ -307,8 +308,9 @@ get_table_id_from_table_code <- function(code, con){
 #' @return numeric code
 #' @export
 get_dim_id_from_table_id <- function(id, dimension, con){
-  DBI::dbGetQuery(con, sprintf(
+  x <- DBI::dbGetQuery(con, sprintf(
     "select id from table_dimensions where table_id = %f and dimension = '%s'", id, dimension))
+  as.numeric(x[1,1])
 }
 
 
