@@ -46,6 +46,8 @@ dittodb::with_mock_db({
     expect_equal(out, 73)
     out <- get_unit_id_from_unit_name("eur", con)
     expect_equal(nrow(out), 0)
+    out <- get_series_ids_from_table_id(24, con)
+    expect_equal(nrow(out), 3092)
   })
 })
 

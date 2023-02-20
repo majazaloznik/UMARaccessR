@@ -326,3 +326,16 @@ get_unit_id_from_unit_name <- function(name, con){
   DBI::dbGetQuery(con, sprintf(
     "select id from unit where name = '%s'", name))
 }
+
+#' Get series ids from table id
+#'
+#'
+#' @inheritParams common_parameters
+#' @param id numeric table id
+#'
+#' @return numeric ids
+#' @export
+get_series_ids_from_table_id <- function(id, con){
+  DBI::dbGetQuery(con, sprintf(
+    "select id from series where table_id = %f", id))
+}
