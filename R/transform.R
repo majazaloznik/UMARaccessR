@@ -18,9 +18,12 @@ add_date_from_period_id <- function(df, interval) {
     dplyr::mutate(interval = interval) %>%
     dplyr::mutate(period =
                     dplyr::if_else(interval == "M",
-                                   lubridate::ym(.data$period_id),
+                                   lubridate::ym(period_id, quiet = TRUE),
                                    dplyr::if_else(interval == "Q",
-                                                  lubridate::yq(.data$period_id, quiet = TRUE), as.Date(NA)))) %>%
+                                                  lubridate::yq(period_id, quiet = TRUE),
+                                                  dplyr::if_else(interval == "A",
+                                                                 lubridate::ymd(period_id, truncated = 2L, quiet = TRUE),
+                                                                 as.Date(NA))))) %>%
     dplyr::select(-interval)
 }
 
