@@ -258,7 +258,6 @@ library(dittodb)
 # on.exit(dbDisconnect)
 # out <- get_unit_id_from_unit_name("eur", con)
 # stop_db_capturing()
-
 # start_db_capturing()
 # con <- dbConnect(RPostgres::Postgres(),
 #                  dbname = "sandbox",
@@ -270,4 +269,5 @@ library(dittodb)
 # on.exit(dbDisconnect)
 # out <- get_series_ids_from_table_id(24, con)
 # stop_db_capturing()
+
 

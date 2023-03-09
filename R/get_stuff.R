@@ -246,7 +246,7 @@ get_last_period_from_vintage <- function(vintage, con){
 #'
 #' Extracts a dataframe with all the series in the database joined together
 #' with their table names and units. Used in \link[UMARaccessR]{create_selection_excel}. Cannae be
-#' bothered with testing.
+#' bothered with testing. Actually testing is not gonna work, cuz there are a bunch of multibyte chars.
 #'
 #' @inheritParams common_parameters
 #'
@@ -254,20 +254,58 @@ get_last_period_from_vintage <- function(vintage, con){
 #' @export
 #'
 get_all_series_wtable_names <- function(con){
-  dplyr::tbl( con, "series") %>%
-    dplyr::left_join(tbl( con, "table"), by = c("table_id"= "id")) %>%
-    dplyr::select(-url, -source_id, -description, -notes) %>%
-    dplyr::left_join(tbl(con, "unit"), by = c("unit_id"="id")) %>%
-    dplyr::rename(unit = name.y,
-           table_code = code.y,
-           series_code = code.x,
-           table_name = name.x,
-           series_name = name_long) %>%
-    dplyr::select(table_code, table_name,
-           series_code, series_name,
-           unit, interval_id) %>%
-    dplyr::arrange(table_code, series_code) %>%
-    dplyr::collect() -> series_df
+  DBI::dbGetQuery(con,
+                  'SELECT
+  "code.y" AS "table_code",
+  "name.x" AS "table_name",
+  "code.x" AS "series_code",
+  "name_long" AS "series_name",
+  "name.y" AS "unit",
+  "interval_id"
+FROM (
+  SELECT
+    "LHS"."id" AS "id",
+    "table_id",
+    "name_long",
+    "unit_id",
+    "code.x",
+    "interval_id",
+    "code.y",
+    "LHS"."name" AS "name.x",
+    "RHS"."name" AS "name.y"
+  FROM (
+    SELECT
+      "id",
+      "table_id",
+      "name_long",
+      "unit_id",
+      "code.x",
+      "interval_id",
+      "code.y",
+      "name"
+    FROM (
+      SELECT
+        "LHS"."id" AS "id",
+        "table_id",
+        "name_long",
+        "unit_id",
+        "LHS"."code" AS "code.x",
+        "interval_id",
+        "RHS"."code" AS "code.y",
+        "name",
+        "source_id",
+        "url",
+        "description",
+        "notes"
+      FROM "series" AS "LHS"
+      LEFT JOIN "table" AS "RHS"
+        ON ("LHS"."table_id" = "RHS"."id")
+    ) "q01"
+  ) "LHS"
+  LEFT JOIN "unit" AS "RHS"
+    ON ("LHS"."unit_id" = "RHS"."id")
+) "q02"
+ORDER BY "table_code", "series_code"')
 }
 
 #' Get source code from source name
