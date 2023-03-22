@@ -10,9 +10,15 @@
 #'
 #' @return nothing - side effect is saving to an excel file.
 #' @export
-#
+#'
+#' @example
+#' \dontrun{
+#' create_selection_excel(get_all_series_wtable_names(con))
+#' }
 create_selection_excel <- function(df, outfile = "db_series",
                                    overwrite = TRUE){
+  df %>%
+    dplyr::rename(unit_name = unit) -> df
   outfile <- paste0(outfile, "-", Sys.Date(), ".xlsx")
   nejmz <- c(names(df), "chart_no", "rolling_average_periods",
              "rolling_average_alignment", 	"year_on_year", "xmin",	"xmax")
