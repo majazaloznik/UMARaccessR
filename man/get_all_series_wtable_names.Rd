@@ -15,5 +15,5 @@ dataframe with a row for each series
 \description{
 Extracts a dataframe with all the series in the database joined together
 with their table names and units. Used in \link[UMARaccessR]{create_selection_excel}. Cannae be
-bothered with testing.
+bothered with testing. Actually testing is not gonna work, cuz there are a bunch of multibyte chars.
 }
