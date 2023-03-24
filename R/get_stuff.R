@@ -68,6 +68,21 @@ get_series_name_from_series <- function(series, con) {
     where id = %f", series))
 }
 
+#' Get series name from series code
+#'
+#' Get the series name_long.
+#'
+#' @inheritParams common_parameters
+#'
+#' @return character vector of series name.
+#' @export
+
+get_series_name_from_series_code <- function(series, con) {
+  DBI::dbGetQuery(con, sprintf(
+    "select name_long from series
+    where code = '%s'", series))
+}
+
 #' Get table name from vintage ID
 #'
 #' Joins the vintage table with the series table to get the

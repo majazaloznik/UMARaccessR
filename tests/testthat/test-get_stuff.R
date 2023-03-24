@@ -48,6 +48,8 @@ dittodb::with_mock_db({
     expect_equal(nrow(out), 0)
     out <- get_series_ids_from_table_id(24, con)
     expect_equal(nrow(out), 3092)
+    out <- get_series_name_from_series_code("MF--ZZZS--003--70--A", con)
+    expect_equal(out[1,1], "DAV\\u010cNI PRIHODKI -- Letno")
   })
 })
 
