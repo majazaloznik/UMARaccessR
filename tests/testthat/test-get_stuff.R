@@ -50,6 +50,8 @@ dittodb::with_mock_db({
     expect_equal(nrow(out), 3092)
     out <- get_series_name_from_series_code("MF--ZZZS--003--70--A", con)
     expect_equal(out[1,1], "DAV\\u010cNI PRIHODKI -- Letno")
+    out <- get_max_category_id_for_source(2, con)
+    expect_equal(out[1,1], 5)
   })
 })
 

@@ -281,3 +281,14 @@ library(dittodb)
 # out <- get_series_name_from_series_code("MF--ZZZS--003--70--A", con)
 # stop_db_capturing()
 
+# start_db_capturing()
+# con <- dbConnect(RPostgres::Postgres(),
+#                  dbname = "sandbox",
+#                  host = "localhost",
+#                  port = 5432,
+#                  user = "mzaloznik",
+#                  password = Sys.getenv("PG_local_MAJA_PSW"))
+# dbExecute(con, "set search_path to test_platform")
+# on.exit(dbDisconnect)
+# out <- get_max_category_id_for_source(2, con)
+# stop_db_capturing()
