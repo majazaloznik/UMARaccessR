@@ -235,7 +235,6 @@ get_data_points_from_vintage <- function(vintage, con){
 #'
 #' @return positx.ct value with tz
 #' @export
-#' @importFrom rlang .data
 get_date_published_from_vintage <- function(vintage, con){
   DBI::dbGetQuery(con, sprintf(
     "select published from vintage where id = %f", vintage)) %>%

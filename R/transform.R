@@ -11,8 +11,6 @@
 #'
 #' @return the same dataframe with an added period column
 #' @export
-#' @importFrom rlang .data
-#'
 add_date_from_period_id <- function(df, interval) {
   df %>%
     dplyr::mutate(interval = interval) %>%
@@ -40,7 +38,6 @@ add_date_from_period_id <- function(df, interval) {
 #'
 #' @return the same dataframe with an added period column
 #' @export
-#' @importFrom rlang .data
 #'
 add_last_date_from_period_id <- function(df, interval) {
   df %>%
