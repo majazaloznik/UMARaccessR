@@ -20,8 +20,8 @@ create_selection_excel <- function(df, outfile = "db_series",
   df %>%
     dplyr::rename(unit_name = unit) -> df
   outfile <- paste0(outfile, "-", Sys.Date(), ".xlsx")
-  nejmz <- c(names(df), "chart_no", "rolling_average_periods",
-             "rolling_average_alignment", 	"year_on_year", "xmin",	"xmax")
+  nejmz <- c(names(df), "chart_no", "sub_chart", "rolling_average_periods",
+             "rolling_average_alignment", 	"year_on_year", "xmin",	"xmax", "notes")
 
   selection_df <- setNames(data.frame(matrix(ncol = length(nejmz), nrow = 0)), nejmz)
 
