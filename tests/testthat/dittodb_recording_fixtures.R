@@ -292,3 +292,17 @@ library(dittodb)
 # on.exit(dbDisconnect)
 # out <- get_max_category_id_for_source(2, con)
 # stop_db_capturing()
+
+start_db_capturing()
+con <- DBI::dbConnect(RPostgres::Postgres(),
+                      dbname = "platform",
+                      host = "localhost",
+                      port = 5432,
+                      user = "mzaloznik",
+                      password = Sys.getenv("PG_local_MAJA_PSW"),
+                      client_encoding = "utf8")
+dbExecute(con, "set search_path to test_platform")
+on.exit(dbDisconnect)
+out <- get_series_id_from_series_code("UMAR--MZ001--234--M", con)
+stop_db_capturing()
+

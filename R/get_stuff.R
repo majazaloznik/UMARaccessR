@@ -412,6 +412,21 @@ get_series_ids_from_table_id <- function(id, con){
     "select id from series where table_id = %f", id))
 }
 
+#' Get series id from series code
+#'
+#'
+#' @inheritParams common_parameters
+#' @param series_code series code value
+#'
+#' @return numeric id
+#' @export
+get_series_id_from_series_code <- function(series_code, con){
+  x <- DBI::dbGetQuery(con, sprintf(
+    "select id from series where code = '%s'", series_code))
+    if(nrow(x) == 0) {NA} else {
+      as.numeric(x[1,1])}
+}
+
 #' Get the largest existing category id for a given source
 #'
 #'

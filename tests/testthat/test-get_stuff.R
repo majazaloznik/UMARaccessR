@@ -55,6 +55,25 @@ dittodb::with_mock_db({
     expect_equal(out[1,1], "DAV\\u010cNI PRIHODKI -- Letno")
     out <- get_max_category_id_for_source(2, con)
     expect_equal(out[1,1], 5)
+
   })
 })
+
+
+dittodb::with_mock_db({
+  con <- DBI::dbConnect(RPostgres::Postgres(),
+                        dbname = "platform",
+                        host = "localhost",
+                        port = 5432,
+                        user = "mzaloznik",
+                        password = Sys.getenv("PG_local_MAJA_PSW"),
+                        client_encoding = "utf8")
+  dbExecute(con, "set search_path to test_platform")
+
+  test_that("mock tests for get_stuff from diff test db", {
+    out <- get_series_id_from_series_code("UMAR--MZ001--234--M", con)
+    expect_equal(out, 40828)
+  })
+})
+
 
