@@ -42,7 +42,10 @@ dittodb::with_mock_db({
     expect_equal(out[1,1], 2)
     out <- get_table_id_from_table_code("DP", con)
     expect_equal(out, 24)
+    # deprecated
     out <- get_dim_id_from_table_id(24, "Konto", con)
+    expect_equal(out, 73)
+    out <- get_tab_dim_id_from_table_id_and_dimension(24, "Konto", con)
     expect_equal(out, 73)
     out <- get_unit_id_from_unit_name("eur", con)
     expect_equal(nrow(out), 0)

@@ -353,6 +353,7 @@ get_table_id_from_table_code <- function(code, con){
 
 #' Get dimension id from table id and dimension name
 #'
+#' Deprecated in favour of \link[UMARaccessR]{get_tab_dim_id_from_table_id_and_dimension}.
 #'
 #' @inheritParams common_parameters
 #' @param id numeric table id
@@ -361,12 +362,29 @@ get_table_id_from_table_code <- function(code, con){
 #' @return numeric code
 #' @export
 get_dim_id_from_table_id <- function(id, dimension, con){
+  .Deprecated("get_tab_dim_id_from_table_id_and_dimension")
   x <- DBI::dbGetQuery(con, sprintf(
     "select id from table_dimensions where table_id = %f and dimension = '%s'", id, dimension))
   if(nrow(x) == 0) {NA} else {
     as.numeric(x[1,1])}
 }
 
+#' Get dimension id from table id and dimension name
+#'
+#' Renamed version of `get_dim_id_from_table_id`.
+#'
+#' @inheritParams common_parameters
+#' @param id numeric table id
+#' @param dimension character string with dimension name
+#'
+#' @return numeric code
+#' @export
+get_tab_dim_id_from_table_id_and_dimension <- function(id, dimension, con){
+  x <- DBI::dbGetQuery(con, sprintf(
+    "select id from table_dimensions where table_id = %f and dimension = '%s'", id, dimension))
+  if(nrow(x) == 0) {NA} else {
+    as.numeric(x[1,1])}
+}
 
 #' Get unit id from name
 #'
