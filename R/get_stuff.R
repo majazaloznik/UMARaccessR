@@ -440,5 +440,18 @@ get_max_category_id_for_source <- function(source_id, con){
     "select max(id) from category where source_id = %f", source_id))
 }
 
-
+#' Get initials from author name
+#'
+#'
+#' @inheritParams common_parameters
+#' @param name author's name
+#'
+#' @return character initials
+#' @export
+get_initials_from_author_name <- function(name, con){
+  x <- DBI::dbGetQuery(con, sprintf(
+    "select initials from umar_authors where name = '%s'", name))
+  if(nrow(x) == 0) {NA} else {
+    x[1,1]}
+}
 

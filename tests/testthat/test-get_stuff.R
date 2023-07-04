@@ -73,6 +73,8 @@ dittodb::with_mock_db({
   test_that("mock tests for get_stuff from diff test db", {
     out <- get_series_id_from_series_code("UMAR--MZ001--234--M", con)
     expect_equal(out, 40828)
+    out <- get_initials_from_author_name("Maja Zalo\u017enik", con)
+    expect_equal(out, "MZ")
   })
 })
 
