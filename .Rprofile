@@ -1,4 +1,6 @@
 source("renv/activate.R")
+if (Sys.getenv("CI") != "true") {
+
 Sys.setenv(http_proxy="http://proxy.gov.si:80")
 Sys.setenv(http_proxy_user="http://proxy.gov.si:80")
 Sys.setenv(https_proxy="http://proxy.gov.si:80")
@@ -31,3 +33,5 @@ if (interactive()) {
 #                       user = "mzaloznik",
 #                       password = Sys.getenv("PG_local_MAJA_PSW"))
 # DBI::dbExecute(con, "set search_path to test_platform")
+
+}
