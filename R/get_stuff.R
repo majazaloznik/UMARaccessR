@@ -455,3 +455,60 @@ get_initials_from_author_name <- function(name, con){
     x[1,1]}
 }
 
+
+#' Get structural metadata for individual UMAR author
+#'
+#' This function is a leftover from a dead end approach, but might still come
+#' in handy. it takes an author name and grabs most of the structural metadata
+#' for that authorćs series in the database.
+#'
+#' @inheritParams common_parameters
+#' @param author_name author's name
+#'
+#' @return character initials
+#' @export
+get_metadata_from_author_name <- function(author_name, con){
+  initials <- get_initials_from_author_name(author_name, con)
+# get all table codes
+  sql_fun <- "CREATE OR REPLACE FUNCTION get_middle_string(str text, delim text)
+  RETURNS text AS $$
+    DECLARE
+  arr text[];
+  res text;
+  BEGIN
+  arr := string_to_array(str, delim);
+  IF array_length(arr, 1) > 2 THEN
+  res := array_to_string(arr[3:array_upper(arr, 1)-1], delim);
+  ELSE
+  res := NULL;
+  END IF;
+  RETURN res;
+  END;
+  $$ LANGUAGE plpgsql;"
+  dbSendQuery(con, sql_fun)
+  x <- DBI::dbGetQuery(con, sprintf("
+  SELECT
+  t1.code,
+  t1.name,
+  STRING_AGG(t2.dimension, '--') AS dimz,
+  t3.id AS series_id,
+  t3.table_id ,
+  t3.name_long,
+  t3.code,
+  t3.interval_id,
+  t4.name,
+  get_middle_string(t3.code, '--') AS dim_levels
+  FROM
+  test_platform.table t1
+  JOIN
+  test_platform.table_dimensions t2 ON t1.id = t2.table_id
+  JOIN
+  test_platform.series t3 ON t1.id = t3.table_id
+  JOIN
+  test_platform.unit t4 on t3.unit_id = t4.id
+  WHERE
+  t1.code LIKE '%s%%'
+  GROUP BY
+  t1.id, t1.code, t1.name, t3.id, t3.table_id, t3.name_long, t4.name;", initials))
+x
+}

@@ -317,3 +317,16 @@ library(dittodb)
 # on.exit(dbDisconnect)
 # out <- get_initials_from_author_name("Maja Zalo\u017enik", con)
 # stop_db_capturing()
+
+start_db_capturing()
+con <- DBI::dbConnect(RPostgres::Postgres(),
+                      dbname = "platform",
+                      host = "localhost",
+                      port = 5432,
+                      user = "mzaloznik",
+                      password = Sys.getenv("PG_local_MAJA_PSW"),
+                      client_encoding = "utf8")
+dbExecute(con, "set search_path to test_platform")
+on.exit(dbDisconnect)
+out <- get_metadata_from_author_name("Matev\u017e Hribernik", con)
+stop_db_capturing()

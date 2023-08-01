@@ -76,6 +76,12 @@ dittodb::with_mock_db({
     out <- get_initials_from_author_name("Maja Zalo\u017enik", con)
     expect_equal(out, "MZ")
   })
+
+  test_that("test get metadata", {
+    out <- get_metadata_from_author_name("Matev\u017e Hribernik", con)
+    expect_true(nrow(out)== 0)
+  })
 })
+
 
 
