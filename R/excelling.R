@@ -10,11 +10,9 @@
 #'
 #' @return nothing - side effect is saving to an excel file.
 #' @export
-#'
+#' @importFrom stats setNames
 #' @example
-#' \dontrun{
-#' create_selection_excel(get_all_series_wtable_names(con))
-#' }
+#' \dontrun{ create_selection_excel(get_all_series_wtable_names(con)) }
 create_selection_excel <- function(df, outfile = "db_series",
                                    overwrite = TRUE){
   df %>%

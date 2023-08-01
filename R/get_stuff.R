@@ -485,7 +485,7 @@ get_metadata_from_author_name <- function(author_name, con){
   RETURN res;
   END;
   $$ LANGUAGE plpgsql;"
-  dbSendQuery(con, sql_fun)
+  DBI::dbSendQuery(con, sql_fun)
   x <- DBI::dbGetQuery(con, sprintf("
   SELECT
   t1.code,
