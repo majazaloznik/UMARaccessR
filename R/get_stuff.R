@@ -455,6 +455,21 @@ get_initials_from_author_name <- function(name, con){
     x[1,1]}
 }
 
+#' Get email from author initials
+#'
+#'
+#' @inheritParams common_parameters
+#' @param initials author's iniitals
+#'
+#' @return character email
+#' @export
+get_email_from_author_initials <- function(initials, con){
+  x <- DBI::dbGetQuery(con, sprintf(
+    "select email from umar_authors where initials = '%s'", initials))
+  if(nrow(x) == 0) {NA} else {
+    x[1,1]}
+}
+
 
 #' Get structural metadata for individual UMAR author
 #'

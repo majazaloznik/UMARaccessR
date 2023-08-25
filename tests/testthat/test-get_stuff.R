@@ -75,6 +75,8 @@ dittodb::with_mock_db({
     expect_equal(out, 40828)
     out <- get_initials_from_author_name("Maja Zalo\u017enik", con)
     expect_equal(out, "MZ")
+    out <- get_email_from_author_initials("MZ", con)
+    expect_equal(out, "maja.zaloznik@gov.si")
   })
 
   test_that("test get metadata", {
