@@ -7,7 +7,7 @@
 get_table_id_from_table_code(code, con)
 }
 \arguments{
-\item{code}{character string with source name}
+\item{code}{character string with table code}
 
 \item{con}{PostgreSQL connection object created by the RPostgres package.}
 }
@@ -15,5 +15,5 @@ get_table_id_from_table_code(code, con)
 numeric code
 }
 \description{
-Get table id from table code
+Deprecated: Use `\link[UMARaccessR]{sql_get_table_id_from_table_code}` instead.
 }

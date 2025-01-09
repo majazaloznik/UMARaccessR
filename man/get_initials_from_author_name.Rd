@@ -15,5 +15,5 @@ get_initials_from_author_name(name, con)
 character initials
 }
 \description{
-Get initials from author name
+Deprecated: Use `\link[UMARaccessR]{sql_get_initials_from_author_name}` instead.
 }

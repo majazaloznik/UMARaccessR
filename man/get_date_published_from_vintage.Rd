@@ -12,8 +12,11 @@ get_date_published_from_vintage(vintage, con)
 \item{con}{PostgreSQL connection object created by the RPostgres package.}
 }
 \value{
-positx.ct value with tz
+POSIXct value with CET timezone
 }
 \description{
 Just does that.
+}
+\details{
+Deprecated: Use `\link[UMARaccessR]{sql_get_date_published_from_vintage}` instead.
 }

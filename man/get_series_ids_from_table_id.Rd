@@ -15,5 +15,5 @@ get_series_ids_from_table_id(id, con)
 numeric ids
 }
 \description{
-Get series ids from table id
+Deprecated: Use `\link[UMARaccessR]{sql_get_series_ids_from_table_id}` instead.
 }

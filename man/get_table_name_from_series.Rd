@@ -15,5 +15,8 @@ get_table_name_from_series(series, con)
 character vector of table name.
 }
 \description{
-Lookup the table name from the series ID#'
+Lookup the table name from the series ID
+}
+\details{
+Deprecated: Use `\link[UMARaccessR]{sql_get_table_name_from_series}` instead.
 }

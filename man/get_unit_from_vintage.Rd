@@ -18,3 +18,6 @@ character vector of unit name.
 Joins vintage and series tables to get the id of the unit,
 which is looked up in the unit table to get its name.
 }
+\details{
+Deprecated: Use `sql_get_unit_from_vintage()` instead.
+}

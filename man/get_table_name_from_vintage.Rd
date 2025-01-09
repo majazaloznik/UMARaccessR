@@ -18,3 +18,6 @@ character vector of table name.
 Joins the vintage table with the series table to get the
 table id and then looks up the name in the table table.
 }
+\details{
+Deprecated: Use `sql_get_table_name_from_vintage()` instead.
+}

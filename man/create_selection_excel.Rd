@@ -21,3 +21,8 @@ Takes the dataframe with all the series produced by \link[UMARaccessR]{get_all_s
 and creates an excel file with these series and a prepared sheet for creating a selection of
 series.
 }
+\examples{
+\dontrun{
+  create_selection_excel(get_all_series_wtable_names(con))
+}
+}

@@ -15,5 +15,5 @@ get_max_category_id_for_source(source_id, con)
 numeric id
 }
 \description{
-Get the largest existing category id for a given source
+Deprecated: Use `\link[UMARaccessR]{sql_get_max_category_id_for_source}` instead.
 }

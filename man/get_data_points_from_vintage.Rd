@@ -18,3 +18,6 @@ the datapoints in that vintage.
 \description{
 Gets the data periods and values for a single vintage.
 }
+\details{
+Deprecated: Use `\link[UMARaccessR]{sql_get_data_points_from_vintage}` instead.
+}

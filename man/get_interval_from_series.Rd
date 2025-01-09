@@ -17,3 +17,6 @@ character vector of interval id
 \description{
 Get the interval id from the series table, which is alphanumeric e.g. M for monthly etc.
 }
+\details{
+Deprecated: Use `\link[UMARaccessR]{sql_get_interval_from_series}` instead.
+}

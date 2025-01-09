@@ -21,3 +21,6 @@ numeric vintage id.
 Gets the vintage based on the series ID, by default the most recent one,
 otherwise the one that was valid on the date passed with `date_valid`.
 }
+\details{
+Deprecated: Use `\link[UMARaccessR]{sql_get_vintage_from_series}` instead.
+}

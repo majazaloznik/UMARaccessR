@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.2",
+    "Version": "4.3.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -59,6 +59,22 @@
         "utils"
       ],
       "Hash": "32e79b908fda56ee57fe518a8d37b864"
+    },
+    "UMARimportR": {
+      "Package": "UMARimportR",
+      "Version": "0.1.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "majazaloznik",
+      "RemoteRepo": "UMARimportR",
+      "RemoteRef": "main",
+      "RemoteSha": "c76f8eeb15c4cad820c5e6cba81c218d5cd86dc1",
+      "Requirements": [
+        "DBI",
+        "RPostgres"
+      ],
+      "Hash": "8c22fced6917754a9d3ca486151b2111"
     },
     "askpass": {
       "Package": "askpass",
@@ -309,14 +325,9 @@
     },
     "dittodb": {
       "Package": "dittodb",
-      "Version": "0.1.4.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "dittodb",
-      "RemoteUsername": "ropensci",
-      "RemoteRef": "beaa3c69fb8edc450bd06110205c157a792cb12c",
-      "RemoteSha": "beaa3c69fb8edc450bd06110205c157a792cb12c",
+      "Version": "0.1.8",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "DBI",
         "R",
@@ -327,7 +338,7 @@
         "rlang",
         "utils"
       ],
-      "Hash": "76bfbd0459b5784cff9c40a425867a46"
+      "Hash": "af6d03c46af4ef02df9f70298d571f1d"
     },
     "dplyr": {
       "Package": "dplyr",
@@ -847,7 +858,7 @@
     },
     "roxygen2": {
       "Package": "roxygen2",
-      "Version": "7.2.0",
+      "Version": "7.3.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -858,7 +869,6 @@
         "commonmark",
         "cpp11",
         "desc",
-        "digest",
         "knitr",
         "methods",
         "pkgload",
@@ -870,7 +880,7 @@
         "withr",
         "xml2"
       ],
-      "Hash": "b390c1d54fcd977cda48588e6172daba"
+      "Hash": "6ee25f9054a70f44d615300ed531ba8d"
     },
     "rprojroot": {
       "Package": "rprojroot",

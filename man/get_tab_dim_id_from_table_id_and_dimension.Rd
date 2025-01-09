@@ -17,5 +17,5 @@ get_tab_dim_id_from_table_id_and_dimension(id, dimension, con)
 numeric code
 }
 \description{
-Renamed version of `get_dim_id_from_table_id`.
+Deprecated: Use `\link[UMARaccessR]{sql_get_tab_dim_id_from_table_id_and_dimension}` instead.
 }

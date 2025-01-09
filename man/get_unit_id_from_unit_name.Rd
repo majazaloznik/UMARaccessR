@@ -15,5 +15,5 @@ get_unit_id_from_unit_name(name, con)
 numeric id
 }
 \description{
-Get unit id from name
+Deprecated: Use `\link[UMARaccessR]{sql_get_unit_id_from_unit_name}` instead.
 }

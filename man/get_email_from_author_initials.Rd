@@ -7,7 +7,7 @@
 get_email_from_author_initials(initials, con)
 }
 \arguments{
-\item{initials}{author's iniitals}
+\item{initials}{author's initials}
 
 \item{con}{PostgreSQL connection object created by the RPostgres package.}
 }
@@ -15,5 +15,5 @@ get_email_from_author_initials(initials, con)
 character email
 }
 \description{
-Get email from author initials
+Deprecated: Use `\link[UMARaccessR]{sql_get_email_from_author_initials}` instead.
 }

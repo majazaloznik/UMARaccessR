@@ -18,3 +18,6 @@ character vector of interval id
 Joins the vintage table with the series table to get the
 interval id, which is alphanumeric e.g. M for monthly etc.
 }
+\details{
+Deprecated: Use `\link[UMARaccessR]{sql_get_interval_from_vintage}` instead.
+}

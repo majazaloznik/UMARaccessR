@@ -15,5 +15,5 @@ get_source_code_from_source_name(name, con)
 numeric code
 }
 \description{
-Get source code from source name
+Deprecated: Use `\link[UMARaccessR]{sql_get_source_code_from_source_name}` instead.
 }

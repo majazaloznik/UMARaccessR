@@ -17,3 +17,6 @@ character vector of series name.
 \description{
 Joins vintage table with series to get the series name_long.
 }
+\details{
+Deprecated: Use `sql_get_series_name_from_vintage()` instead.
+}

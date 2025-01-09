@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_stuff.R
 \name{get_last_period_from_vintage}
 \alias{get_last_period_from_vintage}
-\title{Get the most recent period for whic a vintage has data}
+\title{Get the most recent period for which a vintage has data}
 \usage{
 get_last_period_from_vintage(vintage, con)
 }
@@ -16,4 +16,7 @@ character of period id e.g "2022M03"
 }
 \description{
 The vintage must have an actual non null value for that period.
+}
+\details{
+Deprecated: Use `\link[UMARaccessR]{sql_get_last_period_from_vintage}` instead.
 }

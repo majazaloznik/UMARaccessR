@@ -15,5 +15,5 @@ get_series_id_from_series_code(series_code, con)
 numeric id
 }
 \description{
-Get series id from series code
+Deprecated: Use `\link[UMARaccessR]{sql_get_series_id_from_series_code}` instead.
 }
