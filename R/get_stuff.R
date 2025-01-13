@@ -491,7 +491,7 @@ sql_get_data_points_from_series <- function(con, series_id, date_valid = NULL,
 #'
 #' @return POSIXct timestamp with CET timezone
 #' @export
-sql_get_date_published_from_vintage <- function(con, vintage_id, schema = "test_platform") {
+sql_get_date_published_from_vintage <- function(vintage_id, con, schema = "test_platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_date_published_from_vintage",
                                            list(p_vintage_id = vintage_id),

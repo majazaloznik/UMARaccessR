@@ -515,19 +515,23 @@ source("tests/testthat/helper-connection.R")
 # sql_get_time_dimension_from_table_code("0400600S", con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
-
+#
 # start_db_capturing()
 # con <- make_test_connection()
 # sql_get_last_publication_date_from_table_id(21L, con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# dbExecute(con, "set search_path to test_platform")
+# get_vintage_from_series_code("SURS--1700104S--2--2--Q", con)
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+
 
 start_db_capturing()
 con <- make_test_connection()
-dbExecute(con, "set search_path to test_platform")
-
-get_vintage_from_series_code("SURS--1700104S--2--2--Q", con)
+sql_get_date_published_from_vintage( con, 363L, schema = "test_platform")
 DBI::dbDisconnect(con)
 stop_db_capturing()
-
-
