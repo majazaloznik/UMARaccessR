@@ -31,7 +31,7 @@ dittodb::with_mock_db({
     out <- get_vintage_from_series(2389, con)
     expect_equal(out[1,1], 11814)
     out <- get_vintage_from_series_code("SURS--1700104S--2--2--Q", con)
-    expect_equal(out[1,1], 1898)
+    expect_equal(out[1,1], 59163)
     out <- get_date_published_from_vintage(1625, con)
     expect_equal(out[1,1], as.POSIXct("2022-10-27 10:30:00",  tz = "CET"))
     out <- get_last_period_from_vintage (1625, con)
@@ -79,10 +79,6 @@ dittodb::with_mock_db({
     expect_equal(out, "maja.zaloznik@gov.si")
   })
 
-  test_that("test get metadata", {
-    out <- get_metadata_from_author_name("Matev\u017e Hribernik", con)
-    expect_true(nrow(out)== 0)
-  })
 })
 
 

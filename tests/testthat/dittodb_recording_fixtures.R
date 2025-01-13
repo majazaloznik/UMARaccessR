@@ -516,8 +516,18 @@ source("tests/testthat/helper-connection.R")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
 
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_last_publication_date_from_table_id(21L, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+
 start_db_capturing()
 con <- make_test_connection()
-sql_get_last_publication_date_from_table_id(21L, con, schema = "test_platform")
+dbExecute(con, "set search_path to test_platform")
+
+get_vintage_from_series_code("SURS--1700104S--2--2--Q", con)
 DBI::dbDisconnect(con)
 stop_db_capturing()
+
+
