@@ -4,12 +4,12 @@
 \alias{sql_get_date_published_from_vintage}
 \title{Get publication date from vintage ID}
 \usage{
-sql_get_date_published_from_vintage(con, vintage_id, schema = "test_platform")
+sql_get_date_published_from_vintage(vintage_id, con, schema = "test_platform")
 }
 \arguments{
-\item{con}{Database connection object}
-
 \item{vintage_id}{Integer vintage identifier}
+
+\item{con}{Database connection object}
 
 \item{schema}{Character string specifying the database schema}
 }
