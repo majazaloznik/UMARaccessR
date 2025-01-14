@@ -479,7 +479,15 @@ source("tests/testthat/helper-connection.R")
 # sql_get_series_id_from_series_code("SURS--1700102S--1--6--M", con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
-#
+
+start_db_capturing()
+con <- make_test_connection()
+sql_get_series_id_from_series_code(c("SURS--1700102S--1--6--M",
+                                     "SURS--1700102S--1--6--M"),
+                                   con, schema = "test_platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()
+
 # start_db_capturing()
 # con <- make_test_connection()
 # sql_get_max_category_id_for_source(1L, con, schema = "test_platform")

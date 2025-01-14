@@ -851,7 +851,7 @@ sql_get_series_id_from_series_code <- function(series_code, con, schema = "test_
                                            list(p_series_code = series_code),
                                            schema)
   if (nrow(result) == 0) return(NA)
-  return(as.numeric(result$id[1]))
+  return(as.numeric(result$id))
 }
 
 #' Get series id from series code

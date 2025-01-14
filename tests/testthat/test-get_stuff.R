@@ -150,7 +150,7 @@ test_that("new get functions work correctly", {
     expect_named(result, c("tab_dim_id", "dimension", "level_value", "level_text"))
     expect_true(nrow(result) == 112)
     result <- sql_get_series_id_from_series_code("SURS--1700102S--1--6--M", con, schema = "test_platform")
-    expect_equal(result, 1917)
+    expect_equal(result, c(1917, 1917))
     result <- sql_get_max_category_id_for_source(1L, con, schema = "test_platform")
     expect_true(result == 582)
     result <- sql_get_initials_from_author_name("Maja Založnik", con, schema = "test_platform")
