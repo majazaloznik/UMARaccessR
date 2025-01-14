@@ -536,10 +536,18 @@ stop_db_capturing()
 # get_vintage_from_series_code("SURS--1700104S--2--2--Q", con)
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
-
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_date_published_from_vintage( con, 363L, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
 
 start_db_capturing()
 con <- make_test_connection()
-sql_get_date_published_from_vintage( con, 363L, schema = "test_platform")
+
+result <- sql_get_non_time_dimensions_from_table_id(21L, con, schema = "test_platform")
+print(result)  # Verify we get data
+
 DBI::dbDisconnect(con)
 stop_db_capturing()

@@ -177,8 +177,17 @@ test_that("new get functions work correctly", {
     sql_get_date_published_from_vintage( 363L, con, schema = "test_platform")
     expect_s3_class(result, "POSIXct")
     expect_true(length(result) > 0)
+    result <- sql_get_non_time_dimensions_from_table_id(361L, con, schema = "test_platform")
+    expect_s3_class(result, "data.frame")
+    expect_named(result, c("dimension", "id"))
+    expect_type(result$dimension, "character")
+    expect_type(result$id, "double")  # bigint comes back as double
+    expect_true(nrow(result) == 2)
   })
   dbDisconnect(con)
 })
+
+
+
 
 

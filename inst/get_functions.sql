@@ -471,3 +471,21 @@ BEGIN
    ORDER BY v.published DESC;
 END;
 $$ LANGUAGE plpgsql;
+-- ============================================================================
+-- Function: get_non_time_dimensions_from_table_id
+-- Description: Retrieves non-time dimensions and their IDs for given table ID
+-- ============================================================================
+CREATE OR REPLACE FUNCTION test_platform.get_non_time_dimensions_from_table_id(p_table_id integer)
+RETURNS TABLE (
+    dimension character varying,
+    id bigint
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT td.dimension, td.id
+    FROM test_platform.table_dimensions td
+    WHERE td.table_id = p_table_id
+    AND td.is_time = false
+    ORDER BY td.id;
+END;
+$$ LANGUAGE plpgsql;

@@ -1022,3 +1022,20 @@ sql_get_last_publication_date_from_table_id <- function(table_id, con, schema = 
   if (nrow(result) == 0) return(NULL)
   return(result$published)  # Return vector of timestamps
 }
+
+#' Get non-time dimensions from table ID
+#'
+#' @param con Database connection object
+#' @param table_id Integer table identifier
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame containing dimension names and IDs, or NULL if none found
+#' @export
+sql_get_non_time_dimensions_from_table_id <- function(table_id, con, schema = "test_platform") {
+  result <- UMARimportR::sql_function_call(con,
+                                          "get_non_time_dimensions_from_table_id",
+                                          list(p_table_id = table_id),
+                                          schema)
+  if (nrow(result) == 0) return(NULL)
+  return(result)
+}
