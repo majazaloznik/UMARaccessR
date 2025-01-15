@@ -1039,3 +1039,23 @@ sql_get_non_time_dimensions_from_table_id <- function(table_id, con, schema = "t
   if (nrow(result) == 0) return(NULL)
   return(result)
 }
+
+#' Get dimension ID for table ID and dimension name
+#'
+#' @param con Database connection object
+#' @param table_id Integer table identifier
+#' @param dimension Character string dimension name
+#' @param schema Character string specifying the database schema
+#'
+#' @return Integer dimension ID or NULL if not found
+#' @export
+sql_get_dimension_id_from_table_id_and_dimension <- function(table_id, dimension, con,
+                                                             schema = "test_platform") {
+  result <- UMARimportR::sql_function_call(con,
+                                           "get_dimension_id_from_table_id_and_dimension",
+                                           list(p_table_id = table_id,
+                                                p_dimension = dimension),
+                                           schema)
+  if (nrow(result) == 0) return(NULL)
+  return(as.numeric(result$id[1]))
+}

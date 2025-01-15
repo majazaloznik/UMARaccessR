@@ -183,11 +183,11 @@ test_that("new get functions work correctly", {
     expect_type(result$dimension, "character")
     expect_type(result$id, "double")  # bigint comes back as double
     expect_true(nrow(result) == 2)
+    result <- sql_get_dimension_id_from_table_id_and_dimension(
+      20L, "MERITVE", con, schema = "test_platform")
+    expect_type(result, "double")
+    expect_equal(result, 63)
+
   })
   dbDisconnect(con)
 })
-
-
-
-
-

@@ -1492,3 +1492,69 @@ EXCEPTION WHEN OTHERS THEN
     RAISE;
 END $$;
 ROLLBACK;
+
+
+
+-- ============================================================================
+-- Tests for get_dimension_id_from_table_id_and_dimension
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+   v_table_id integer;
+   v_dimension_id bigint;
+   v_result bigint;
+   v_count integer;
+BEGIN
+   RAISE NOTICE 'Starting get_dimension_id_from_table_id_and_dimension tests...';
+
+   -- Create test table
+   INSERT INTO platform.table (code, name, source_id, url)
+   VALUES ('TEST_TABLE', 'Test Table', 1, 'http://test.com')
+   RETURNING id INTO v_table_id;
+
+   -- Create dimension
+   INSERT INTO platform.table_dimensions (table_id, dimension, is_time)
+   VALUES (v_table_id, 'test_dimension', false)
+   RETURNING id INTO v_dimension_id;
+
+   -- Test 1: Basic retrieval
+   SELECT COUNT(*) INTO v_count
+   FROM platform.get_dimension_id_from_table_id_and_dimension(
+       v_table_id, 'test_dimension'
+   );
+
+   ASSERT v_count = 1,
+       'Should return exactly one dimension';
+
+   SELECT id INTO v_result
+   FROM platform.get_dimension_id_from_table_id_and_dimension(
+       v_table_id, 'test_dimension'
+   );
+
+   ASSERT v_result = v_dimension_id,
+       format('Expected ID %s but got %s', v_dimension_id, v_result);
+
+   -- Test 2: Non-existent table
+   SELECT COUNT(*) INTO v_count
+   FROM platform.get_dimension_id_from_table_id_and_dimension(-1, 'test_dimension');
+
+   ASSERT v_count = 0,
+       'Should return empty for non-existent table';
+
+   -- Test 3: Non-existent dimension
+   SELECT COUNT(*) INTO v_count
+   FROM platform.get_dimension_id_from_table_id_and_dimension(
+       v_table_id, 'nonexistent'
+   );
+
+   ASSERT v_count = 0,
+       'Should return empty for non-existent dimension';
+
+   RAISE NOTICE 'All tests passed successfully';
+
+EXCEPTION WHEN OTHERS THEN
+   RAISE NOTICE 'Test failed: %', SQLERRM;
+   RAISE;
+END $$;
+ROLLBACK;

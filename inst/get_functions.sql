@@ -489,3 +489,21 @@ BEGIN
     ORDER BY td.id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- Function: get_dimension_id_from_table_id_and_dimension
+-- Description: Retrieves dimension ID for given table ID and dimension name
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_dimension_id_from_table_id_and_dimension(
+   p_table_id integer,
+   p_dimension character varying
+)
+RETURNS TABLE (id bigint) AS $$
+BEGIN
+   RETURN QUERY
+   SELECT td.id
+   FROM platform.table_dimensions td
+   WHERE td.table_id = p_table_id
+   AND td.dimension = p_dimension;
+END;
+$$ LANGUAGE plpgsql;
