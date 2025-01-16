@@ -475,7 +475,7 @@ $$ LANGUAGE plpgsql;
 -- Function: get_non_time_dimensions_from_table_id
 -- Description: Retrieves non-time dimensions and their IDs for given table ID
 -- ============================================================================
-CREATE OR REPLACE FUNCTION test_platform.get_non_time_dimensions_from_table_id(p_table_id integer)
+CREATE OR REPLACE FUNCTION platform.get_non_time_dimensions_from_table_id(p_table_id integer)
 RETURNS TABLE (
     dimension character varying,
     id bigint
@@ -483,7 +483,7 @@ RETURNS TABLE (
 BEGIN
     RETURN QUERY
     SELECT td.dimension, td.id
-    FROM test_platform.table_dimensions td
+    FROM platform.table_dimensions td
     WHERE td.table_id = p_table_id
     AND td.is_time = false
     ORDER BY td.id;
@@ -505,5 +505,25 @@ BEGIN
    FROM platform.table_dimensions td
    WHERE td.table_id = p_table_id
    AND td.dimension = p_dimension;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- ============================================================================
+-- Function: get_levels_from_dimension_id
+-- Description: Retrieves all dimension levels for given dimension ID
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_levels_from_dimension_id(p_tab_dim_id integer)
+RETURNS TABLE (
+    tab_dim_id integer,
+    level_value character varying,
+    level_text character varying
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT dl.tab_dim_id, dl.level_value, dl.level_text
+    FROM platform.dimension_levels dl
+    WHERE dl.tab_dim_id = p_tab_dim_id
+    ORDER BY dl.level_value;
 END;
 $$ LANGUAGE plpgsql;

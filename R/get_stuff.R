@@ -1059,3 +1059,20 @@ sql_get_dimension_id_from_table_id_and_dimension <- function(table_id, dimension
   if (nrow(result) == 0) return(NULL)
   return(as.numeric(result$id[1]))
 }
+
+#' Get dimension levels from dimension ID
+#'
+#' @param con Database connection object
+#' @param tab_dim_id Integer dimension identifier
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame containing dimension levels or NULL if none found
+#' @export
+sql_get_levels_from_dimension_id <- function(tab_dim_id, con, schema = "test_platform") {
+  result <- UMARimportR::sql_function_call(con,
+                                           "get_levels_from_dimension_id",
+                                           list(p_tab_dim_id = tab_dim_id),
+                                           schema)
+  if (nrow(result) == 0) return(NULL)
+  return(result)
+}

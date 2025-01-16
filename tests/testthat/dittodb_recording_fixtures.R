@@ -548,12 +548,16 @@ source("tests/testthat/helper-connection.R")
 # sql_get_non_time_dimensions_from_table_id(21L, con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_dimension_id_from_table_id_and_dimension(
+#   20L, "MERITVE", con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
 
 start_db_capturing()
 con <- make_test_connection()
-sql_get_dimension_id_from_table_id_and_dimension(
-  20L, "MERITVE", con, schema = "test_platform")
+sql_get_levels_from_dimension_id(47L, con, schema = "test_platform")
 DBI::dbDisconnect(con)
 stop_db_capturing()
-
-

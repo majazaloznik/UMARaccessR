@@ -1450,12 +1450,12 @@ BEGIN
     RAISE NOTICE 'Starting get_non_time_dimensions_from_table_id tests...';
 
     -- Create test table
-    INSERT INTO test_platform.table (code, name, source_id, url)
+    INSERT INTO platform.table (code, name, source_id, url)
     VALUES ('TEST_TABLE', 'Test Table', 1, 'http://test.com')
     RETURNING id INTO v_table_id;
 
     -- Create both time and non-time dimensions
-    INSERT INTO test_platform.table_dimensions (table_id, dimension, is_time)
+    INSERT INTO platform.table_dimensions (table_id, dimension, is_time)
     VALUES
         (v_table_id, 'time_dimension', true),
         (v_table_id, 'region', false),
@@ -1463,14 +1463,14 @@ BEGIN
 
     -- Test 1: Count non-time dimensions
     SELECT COUNT(*) INTO v_count
-    FROM test_platform.get_non_time_dimensions_from_table_id(v_table_id);
+    FROM platform.get_non_time_dimensions_from_table_id(v_table_id);
 
     ASSERT v_count = 2,
         format('Should return 2 non-time dimensions but got %s', v_count);
 
     -- Test 2: Check each returned row
     FOR v_result IN
-        SELECT * FROM test_platform.get_non_time_dimensions_from_table_id(v_table_id)
+        SELECT * FROM platform.get_non_time_dimensions_from_table_id(v_table_id)
     LOOP
         ASSERT v_result.dimension IN ('region', 'category'),
             format('Unexpected dimension name: %s', v_result.dimension);
@@ -1480,7 +1480,7 @@ BEGIN
 
     -- Test 3: Non-existent table
     SELECT COUNT(*) INTO v_count
-    FROM test_platform.get_non_time_dimensions_from_table_id(-1);
+    FROM platform.get_non_time_dimensions_from_table_id(-1);
 
     ASSERT v_count = 0,
         'Should return empty for non-existent table';
@@ -1556,5 +1556,70 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN
    RAISE NOTICE 'Test failed: %', SQLERRM;
    RAISE;
+END $$;
+ROLLBACK;
+
+
+-- ============================================================================
+-- Tests for get_levels_from_dimension_id
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+    v_table_id integer;
+    v_dimension_id integer;  -- Changed from bigint to integer
+    v_result RECORD;
+    v_count integer;
+BEGIN
+    RAISE NOTICE 'Starting get_levels_from_dimension_id tests...';
+
+    -- Create prerequisites
+    INSERT INTO platform.table (code, name, source_id, url)
+    VALUES ('TEST_TABLE', 'Test Table', 1, 'http://test.com')
+    RETURNING id INTO v_table_id;
+
+    -- Create dimension
+    INSERT INTO platform.table_dimensions (table_id, dimension, is_time)
+    VALUES (v_table_id, 'test_dimension', false)
+    RETURNING id INTO v_dimension_id;
+
+    -- Create dimension levels
+    INSERT INTO platform.dimension_levels (tab_dim_id, level_value, level_text)
+    VALUES
+        (v_dimension_id, 'A', 'Level A'),
+        (v_dimension_id, 'B', 'Level B'),
+        (v_dimension_id, 'C', 'Level C');
+
+    -- Test 1: Count results
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_levels_from_dimension_id(v_dimension_id);
+
+    ASSERT v_count = 3,
+        format('Should return 3 levels but got %s', v_count);
+
+    -- Test 2: Check ordering
+    FOR v_result IN
+        SELECT * FROM platform.get_levels_from_dimension_id(v_dimension_id)
+    LOOP
+        ASSERT v_result.tab_dim_id = v_dimension_id,
+            'Dimension ID should match input';
+        ASSERT v_result.level_value IS NOT NULL,
+            'Level value should not be null';
+        ASSERT v_result.level_text IS NOT NULL,
+            'Level text should not be null';
+    END LOOP;
+
+    -- Test 3: Non-existent dimension ID
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_levels_from_dimension_id(-1);
+
+    ASSERT v_count = 0,
+        'Should return empty for non-existent dimension ID';
+
+    RAISE NOTICE 'All tests passed successfully';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
 END $$;
 ROLLBACK;

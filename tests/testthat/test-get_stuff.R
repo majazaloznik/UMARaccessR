@@ -187,7 +187,15 @@ test_that("new get functions work correctly", {
       20L, "MERITVE", con, schema = "test_platform")
     expect_type(result, "double")
     expect_equal(result, 63)
+    result <- sql_get_levels_from_dimension_id(47L, con, schema = "test_platform")
 
+
+    expect_s3_class(result, "data.frame")
+    expect_named(result, c("tab_dim_id", "level_value", "level_text"))
+    expect_true(nrow(result) == 2)
+    expect_type(result$tab_dim_id, "integer")
+    expect_type(result$level_value, "character")
+    expect_type(result$level_text, "character")
   })
   dbDisconnect(con)
 })
