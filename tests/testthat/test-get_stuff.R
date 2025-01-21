@@ -119,15 +119,23 @@ test_that("new get functions work correctly", {
     if (nrow(result) > 1) {
       expect_true(all(result$period_id[-1] >= result$period_id[-nrow(result)]))
     }
-    result <- sql_get_data_points_from_series(con, 361L,
-                                              date_valid = as.POSIXct("2023-03-01"),
-                                              schema = "test_platform")
+    result <- sql_get_data_points_from_series_id(con, 361L,
+                                                 date_valid = as.POSIXct("2023-03-01"),
+                                                 schema = "test_platform")
     expect_s3_class(result, "data.frame")
     expect_named(result, c("period_id", "value"))
     expect_equal(dim(result), c(112,2))
     if (nrow(result) > 1) {
       expect_true(all(result$period_id[-1] >= result$period_id[-nrow(result)]))
     }
+    result <- mock_get_data_points_from_series_id(con, 1895, as.Date("2023-03-25"))
+    expect_true(nrow(result) ==109)
+    result <- mock_get_data_points_from_series_id(con, 361, as.Date("2023-03-25"))
+    expect_true(nrow(result) ==112)
+    result <- mock_get_data_points_from_series_id(con, 1895)
+    expect_true(nrow(result) ==116)
+    result <- mock_get_data_points_from_series_id(con, 361)
+    expect_true(nrow(result) ==113)
     result <- sql_get_last_period_from_vintage(con, 361L, schema = "test_platform")
     expect_equal(result, "2022Q3")
     result <- sql_get_source_code_from_source_name(con, "SURS", schema = "test_platform")
