@@ -9,7 +9,7 @@ mock_get_data_points_from_series_id(
   series_id,
   new_name = NULL,
   date_valid = NULL,
-  schema = "test_platform"
+  schema = "platform"
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ mock_get_data_points_from_series_id(
 
 \item{date_valid}{Optional timestamp for vintage selection}
 
-\item{schema}{Character string specifying the database schema}
+\item{schema}{Character string specifying the database schema, defaults to "platform"}
 }
 \value{
 Data frame with period_id and value columns
