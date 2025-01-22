@@ -131,7 +131,7 @@ sql_get_series_name_from_series <- function(con, series_id, schema = "test_platf
                                            list(p_series_id = series_id),
                                            schema)
   if (nrow(result) == 0) return(NULL)
-  return(result$name_long[1])
+  return(result)
 }
 
 #' Get series name from series ID
@@ -164,7 +164,7 @@ sql_get_series_name_from_series_code <- function(con, series_code, schema = "tes
                                            list(p_series_code = series_code),
                                            schema)
   if (nrow(result) == 0) return(NULL)
-  return(result$name_long[1])
+  return(result)
 }
 
 #' Get series name from series code
