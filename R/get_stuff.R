@@ -893,7 +893,8 @@ sql_get_series_id_from_series_code <- function(series_code, con, schema = "test_
   result <- UMARimportR::sql_function_call(con,
                                            "get_series_id_from_series_code",
                                            list(p_series_code = series_code),
-                                           schema)
+                                           schema) |>
+    dplyr::mutate(id = as.numeric(id))
   if (nrow(result) == 0) return(NA)
   return(result)
 }
