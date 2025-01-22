@@ -567,11 +567,11 @@ con <- make_test_connection()
 series_ids <-  c(1895, 361)
 dates_valid <- as.Date("2023-03-25")
 for(sid in series_ids) {
-  result <- mock_get_data_points_from_series_id(con, sid, dates_valid)
+  result <- mock_get_data_points_from_series_id(con, sid, NULL, dates_valid)
   print(sprintf("Recorded series %d current data with %d rows",
                 sid, nrow(result)))}
 for(sid in series_ids) {
-  result <- mock_get_data_points_from_series_id(con, sid)
+  result <- mock_get_data_points_from_series_id(con, sid, "test")
   print(sprintf("Recorded series %d current data with %d rows",
                 sid, nrow(result)))}
 DBI::dbDisconnect(con)

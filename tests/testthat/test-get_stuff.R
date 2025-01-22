@@ -128,14 +128,15 @@ test_that("new get functions work correctly", {
     if (nrow(result) > 1) {
       expect_true(all(result$period_id[-1] >= result$period_id[-nrow(result)]))
     }
-    result <- mock_get_data_points_from_series_id(con, 1895, as.Date("2023-03-25"))
+    result <- mock_get_data_points_from_series_id(con, 1895, NULL, as.Date("2023-03-25"))
     expect_true(nrow(result) ==109)
-    result <- mock_get_data_points_from_series_id(con, 361, as.Date("2023-03-25"))
+    result <- mock_get_data_points_from_series_id(con, 361, NULL,as.Date("2023-03-25"))
     expect_true(nrow(result) ==112)
     result <- mock_get_data_points_from_series_id(con, 1895)
     expect_true(nrow(result) ==116)
-    result <- mock_get_data_points_from_series_id(con, 361)
+    result <- mock_get_data_points_from_series_id(con, 361, "test")
     expect_true(nrow(result) ==113)
+    expect_true("test" %in% colnames(result))
     result <- sql_get_last_period_from_vintage(con, 361L, schema = "test_platform")
     expect_equal(result, "2022Q3")
     result <- sql_get_source_code_from_source_name(con, "SURS", schema = "test_platform")

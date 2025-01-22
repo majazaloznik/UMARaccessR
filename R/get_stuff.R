@@ -487,12 +487,14 @@ sql_get_data_points_from_series_id <- function(con, series_id, date_valid = NULL
 #'
 #' @param con Database connection object
 #' @param series_id Integer series identifier
+#' @param new_name character string to rename the value column
 #' @param date_valid Optional timestamp for vintage selection
 #' @param schema Character string specifying the database schema
 #'
 #' @return Data frame with period_id and value columns
 #' @export
-mock_get_data_points_from_series_id <- function(con, series_id, date_valid = NULL,
+mock_get_data_points_from_series_id <- function(con, series_id,  new_name = NULL,
+                                                date_valid = NULL,
                                              schema = "test_platform") {
   date_condition <- if (!is.null(date_valid)) {
     sprintf("AND published < '%s'", format(date_valid, "%Y-%m-%d %H:%M:%S"))
@@ -521,6 +523,7 @@ mock_get_data_points_from_series_id <- function(con, series_id, date_valid = NUL
 
   result <- DBI::dbGetQuery(con, query)
   if (nrow(result) == 0) return(NULL)
+  if(!is.null(new_name)) result <- result |> dplyr::rename({{new_name}} := value)
   return(result)
 }
 
