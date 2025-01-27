@@ -205,6 +205,19 @@ test_that("new get functions work correctly", {
     expect_type(result$tab_dim_id, "integer")
     expect_type(result$level_value, "character")
     expect_type(result$level_text, "character")
-  })
+    result <- sql_get_dimensions_from_table_id(361L, con, schema = "test_platform")
+    expect_s3_class(result, "data.frame")
+    expect_named(result, c("id", "table_id", "dimension", "is_time"))
+    expect_type(result$id, "double")
+    expect_type(result$table_id, "integer")
+    expect_type(result$dimension, "character")
+    expect_type(result$is_time, "logical")
+    expect_true(nrow(result) > 0)
+    if (nrow(result) > 1) {
+      expect_true(all(diff(result$id) > 0))
+    }
+
+      })
   dbDisconnect(con)
 })
+

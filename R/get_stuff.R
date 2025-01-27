@@ -1121,3 +1121,21 @@ sql_get_levels_from_dimension_id <- function(tab_dim_id, con, schema = "test_pla
   if (nrow(result) == 0) return(NULL)
   return(result)
 }
+
+
+#' Get dimensions for table ID
+#'
+#' @param con Database connection object
+#' @param table_id Integer table identifier
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame containing dimensions information or NULL if none found
+#' @export
+sql_get_dimensions_from_table_id <- function(table_id, con, schema = "platform") {
+  result <- UMARimportR::sql_function_call(con,
+                                           "get_dimensions_from_table_id",
+                                           list(p_table_id = table_id),
+                                           schema)
+  if (nrow(result) == 0) return(NULL)
+  return(result)
+}

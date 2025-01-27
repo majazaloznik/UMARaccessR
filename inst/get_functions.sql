@@ -527,3 +527,23 @@ BEGIN
     ORDER BY dl.level_value;
 END;
 $$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- Function: get_dimensions_from_table_id
+-- Description: Retrieves all dimensions for given table ID
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_dimensions_from_table_id(p_table_id integer)
+RETURNS TABLE (
+    id bigint,
+    table_id integer,
+    dimension character varying,
+    is_time boolean
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT td.id, td.table_id, td.dimension, td.is_time
+    FROM platform.table_dimensions td
+    WHERE td.table_id = p_table_id
+    ORDER BY td.id;
+END;
+$$ LANGUAGE plpgsql;

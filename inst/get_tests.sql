@@ -1623,3 +1623,63 @@ EXCEPTION WHEN OTHERS THEN
     RAISE;
 END $$;
 ROLLBACK;
+
+
+
+-- ============================================================================
+-- Tests for get_dimensions_from_table_id
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+    v_table_id integer;
+    v_result RECORD;
+    v_count integer;
+BEGIN
+    RAISE NOTICE 'Starting get_dimensions_from_table_id tests...';
+
+    -- Create test table
+    INSERT INTO platform.table (code, name, source_id, url)
+    VALUES ('TEST_TABLE', 'Test Table', 1, 'http://test.com')
+    RETURNING id INTO v_table_id;
+
+    -- Create multiple dimensions
+    INSERT INTO platform.table_dimensions (table_id, dimension, is_time)
+    VALUES
+        (v_table_id, 'time_dim', true),
+        (v_table_id, 'region', false),
+        (v_table_id, 'category', false);
+
+    -- Test 1: Count dimensions
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_dimensions_from_table_id(v_table_id);
+
+    ASSERT v_count = 3,
+        format('Should return 3 dimensions but got %s', v_count);
+
+    -- Test 2: Check each returned row
+    FOR v_result IN
+        SELECT * FROM platform.get_dimensions_from_table_id(v_table_id)
+    LOOP
+        ASSERT v_result.table_id = v_table_id,
+            'Table ID should match input';
+        ASSERT v_result.dimension IS NOT NULL,
+            'Dimension name should not be null';
+        ASSERT v_result.is_time IS NOT NULL,
+            'is_time should not be null';
+    END LOOP;
+
+    -- Test 3: Non-existent table
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_dimensions_from_table_id(-1);
+
+    ASSERT v_count = 0,
+        'Should return empty for non-existent table';
+
+    RAISE NOTICE 'All tests passed successfully';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+ROLLBACK;
