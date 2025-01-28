@@ -69,12 +69,12 @@
       "RemoteUsername": "majazaloznik",
       "RemoteRepo": "UMARimportR",
       "RemoteRef": "main",
-      "RemoteSha": "87521374a1848ea5d90c871e772649c6d982006d",
+      "RemoteSha": "0cc64a44876cbc1d900e3c539d91adbec5b9b5ed",
       "Requirements": [
         "DBI",
         "RPostgres"
       ],
-      "Hash": "b3c7d2ee930321ea1a1e81ff3e84cc78"
+      "Hash": "dfaff02cf3b3aa8e955119f66eaddd22"
     },
     "bit": {
       "Package": "bit",
