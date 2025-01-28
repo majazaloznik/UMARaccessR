@@ -536,10 +536,11 @@ mock_get_data_points_from_series_id <- function(con, series_id,  new_name = NULL
 #' @return POSIXct timestamp with CET timezone
 #' @export
 sql_get_date_published_from_vintage <- function(vintage_id, con, schema = "test_platform") {
+  # Convert integer64 to regular numeric
   result <- UMARimportR::sql_function_call(con,
-                                           "get_date_published_from_vintage",
-                                           list(p_vintage_id = vintage_id),
-                                           schema)
+                                          "get_date_published_from_vintage",
+                                          list(p_vintage_id = vintage_id),
+                                          schema)
   if (nrow(result) == 0) return(NULL)
   lubridate::with_tz(result$published[1], "CET")
 }

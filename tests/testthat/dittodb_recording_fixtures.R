@@ -362,7 +362,7 @@ source("tests/testthat/helper-connection.R")
 #
 # start_db_capturing()
 # con <- make_test_connection()
-# sql_get_series_name_from_series(con, 32421L, schema = "test_platform")
+# sql_get_series_name_from_series(con, 361L, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
 #
@@ -400,7 +400,7 @@ source("tests/testthat/helper-connection.R")
 # con <- make_test_connection()
 # sql_get_vintage_from_series(
 #   con, 361L,
-#   date_valid = as.POSIXct("2023-01-01"),
+#   date_valid = as.POSIXct("2024-01-01"),
 #   schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
@@ -409,7 +409,7 @@ source("tests/testthat/helper-connection.R")
 # start_db_capturing()
 # con <- make_test_connection()
 # sql_get_vintage_from_series_code(con, "SURS--0300220S--BTE--V--N--Q",
-#                                  date_valid = as.POSIXct("2023-03-01"),
+#                                  date_valid = as.POSIXct("2024-01-01"),
 #                                  schema = "test_platform")
 #
 # DBI::dbDisconnect(con)
@@ -472,14 +472,14 @@ source("tests/testthat/helper-connection.R")
 # sql_get_dimension_levels_from_table_id(21L, con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
-
+#
 #
 # start_db_capturing()
 # con <- make_test_connection()
 # sql_get_series_id_from_series_code("SURS--1700102S--1--6--M", con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
-#
+
 # start_db_capturing()
 # con <- make_test_connection()
 # sql_get_series_id_from_series_code(c("SURS--1700102S--1--6--M",
@@ -493,7 +493,7 @@ source("tests/testthat/helper-connection.R")
 # sql_get_max_category_id_for_source(1L, con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
-#
+
 # start_db_capturing()
 # con <- make_test_connection()
 # sql_get_initials_from_author_name("Maja Založnik", con, schema = "test_platform")
@@ -529,7 +529,7 @@ source("tests/testthat/helper-connection.R")
 # sql_get_last_publication_date_from_table_id(21L, con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
-#
+
 # start_db_capturing()
 # con <- make_test_connection()
 # dbExecute(con, "set search_path to test_platform")
@@ -539,7 +539,7 @@ source("tests/testthat/helper-connection.R")
 #
 # start_db_capturing()
 # con <- make_test_connection()
-# sql_get_date_published_from_vintage( con, 363L, schema = "test_platform")
+# sql_get_date_published_from_vintage(363L, con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
 #
@@ -555,33 +555,34 @@ source("tests/testthat/helper-connection.R")
 #   20L, "MERITVE", con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
+#
+start_db_capturing()
+con <- make_test_connection()
+sql_get_levels_from_dimension_id(47L, con, schema = "test_platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()
 
-# start_db_capturing()
-# con <- make_test_connection()
-# sql_get_levels_from_dimension_id(47L, con, schema = "test_platform")
-# DBI::dbDisconnect(con)
-# stop_db_capturing()
-#
-# start_db_capturing()
-# con <- make_test_connection()
-# series_ids <-  c(1895, 361)
-# dates_valid <- as.Date("2023-03-25")
-# for(sid in series_ids) {
-#   result <- mock_get_data_points_from_series_id(con, sid, NULL, dates_valid)
-#   print(sprintf("Recorded series %d current data with %d rows",
-#                 sid, nrow(result)))}
-# for(sid in series_ids) {
-#   result <- mock_get_data_points_from_series_id(con, sid, "test")
-#   print(sprintf("Recorded series %d current data with %d rows",
-#                 sid, nrow(result)))}
-# DBI::dbDisconnect(con)
-# stop_db_capturing()
-#
-# start_db_capturing()
-# con <- make_test_connection()
-# result <- sql_get_dimensions_from_table_id(20L, con, schema = "test_platform")
-# DBI::dbDisconnect(con)
-# stop_db_capturing()
+start_db_capturing()
+con <- make_test_connection()
+series_ids <-  c(1895, 361)
+dates_valid <- as.Date("2023-03-25")
+for(sid in series_ids) {
+  result <- mock_get_data_points_from_series_id(con, sid, NULL, dates_valid,
+                                                schema = "test_platform")
+  print(sprintf("Recorded series %d current data with %d rows",
+                sid, nrow(result)))}
+for(sid in series_ids) {
+  result <- mock_get_data_points_from_series_id(con, sid, "test", schema = "test_platform")
+  print(sprintf("Recorded series %d current data with %d rows",
+                sid, nrow(result)))}
+DBI::dbDisconnect(con)
+stop_db_capturing()
+
+start_db_capturing()
+con <- make_test_connection()
+result <- sql_get_dimensions_from_table_id(20L, con, schema = "test_platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()
 
 start_db_capturing()
 con <- make_test_connection()

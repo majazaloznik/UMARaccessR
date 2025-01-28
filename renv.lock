@@ -69,12 +69,12 @@
       "RemoteUsername": "majazaloznik",
       "RemoteRepo": "UMARimportR",
       "RemoteRef": "main",
-      "RemoteSha": "c76f8eeb15c4cad820c5e6cba81c218d5cd86dc1",
+      "RemoteSha": "87521374a1848ea5d90c871e772649c6d982006d",
       "Requirements": [
         "DBI",
         "RPostgres"
       ],
-      "Hash": "8c22fced6917754a9d3ca486151b2111"
+      "Hash": "b3c7d2ee930321ea1a1e81ff3e84cc78"
     },
     "bit": {
       "Package": "bit",
@@ -219,7 +219,7 @@
     },
     "lubridate": {
       "Package": "lubridate",
-      "Version": "1.9.3",
+      "Version": "1.9.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -228,7 +228,7 @@
         "methods",
         "timechange"
       ],
-      "Hash": "680ad542fbcf801442c83a6ac5a2126c"
+      "Hash": "be38bc740fc51783a78edb5a157e4104"
     },
     "magrittr": {
       "Package": "magrittr",
@@ -303,14 +303,14 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "1.1.4",
+      "Version": "1.1.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "3eec01f8b1dee337674b2e34ab1f9bc1"
+      "Hash": "724dcc1490cd7071ee75ca2994a5446e"
     },
     "stringi": {
       "Package": "stringi",
