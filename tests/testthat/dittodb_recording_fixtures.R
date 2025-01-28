@@ -576,11 +576,16 @@ source("tests/testthat/helper-connection.R")
 #                 sid, nrow(result)))}
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# result <- sql_get_dimensions_from_table_id(20L, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
 
 start_db_capturing()
 con <- make_test_connection()
-result <- sql_get_dimensions_from_table_id(20L, con, schema = "test_platform")
-
+sql_get_series_from_table_id(20L, con, schema = "test_platform")
 DBI::dbDisconnect(con)
 stop_db_capturing()
 

@@ -1683,3 +1683,68 @@ EXCEPTION WHEN OTHERS THEN
     RAISE;
 END $$;
 ROLLBACK;
+
+
+
+-- ============================================================================
+-- Tests get_series_from_table_id
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+   v_table_id integer;
+   v_unit_id integer;
+   v_result RECORD;
+   v_count integer;
+BEGIN
+   RAISE NOTICE 'Starting get_series_from_table_id tests...';
+
+   -- Create test table
+   INSERT INTO platform.table (code, name, source_id, url)
+   VALUES ('TEST_TABLE', 'Test Table', 1, 'http://test.com')
+   RETURNING id INTO v_table_id;
+
+   -- Create test unit
+   INSERT INTO platform.unit (name)
+   VALUES ('test_unit')
+   RETURNING id INTO v_unit_id;
+
+   -- Create multiple series
+   INSERT INTO platform.series (table_id, name_long, unit_id, code, interval_id, live)
+   VALUES
+       (v_table_id, 'Test Series 1', v_unit_id, 'TS1', 'M', true),
+       (v_table_id, 'Test Series 2', v_unit_id, 'TS2', 'Q', true);
+
+   -- Test 1: Count series
+   SELECT COUNT(*) INTO v_count
+   FROM platform.get_series_from_table_id(v_table_id);
+
+   ASSERT v_count = 2,
+       format('Should return 2 series but got %s', v_count);
+
+   -- Test 2: Check each returned row
+   FOR v_result IN
+       SELECT * FROM platform.get_series_from_table_id(v_table_id)
+   LOOP
+       ASSERT v_result.table_id = v_table_id,
+           'Table ID should match input';
+       ASSERT v_result.name_long IS NOT NULL,
+           'Name should not be null';
+       ASSERT v_result.code IS NOT NULL,
+           'Code should not be null';
+   END LOOP;
+
+   -- Test 3: Non-existent table
+   SELECT COUNT(*) INTO v_count
+   FROM platform.get_series_from_table_id(-1);
+
+   ASSERT v_count = 0,
+       'Should return empty for non-existent table';
+
+   RAISE NOTICE 'All tests passed successfully';
+
+EXCEPTION WHEN OTHERS THEN
+   RAISE NOTICE 'Test failed: %', SQLERRM;
+   RAISE;
+END $$;
+ROLLBACK;

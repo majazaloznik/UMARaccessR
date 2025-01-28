@@ -216,8 +216,20 @@ test_that("new get functions work correctly", {
     if (nrow(result) > 1) {
       expect_true(all(diff(result$id) > 0))
     }
-
-      })
-  dbDisconnect(con)
+    result <- sql_get_series_from_table_id(20L, con, schema = "test_platform")
+    expect_s3_class(result, "data.frame")
+    expect_named(result, c("id", "table_id", "name_long", "unit_id",
+                           "code", "interval_id", "live"))
+    expect_type(result$id, "double")
+    expect_type(result$table_id, "integer")
+    expect_type(result$name_long, "character")
+    expect_type(result$unit_id, "integer")
+    expect_type(result$code, "character")
+    expect_type(result$interval_id, "character")
+    expect_type(result$live, "logical")
+    expect_true(nrow(result) > 0)
+    if (nrow(result) > 1) {
+      expect_true(all(diff(result$id) > 0))}
+  })
+dbDisconnect(con)
 })
-

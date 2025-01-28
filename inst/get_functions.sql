@@ -547,3 +547,26 @@ BEGIN
     ORDER BY td.id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- Function: get_series_from_table_id
+-- Description: Retrieves all series for given table ID
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_series_from_table_id(p_table_id integer)
+RETURNS TABLE (
+   id bigint,
+   table_id integer,
+   name_long character varying,
+   unit_id integer,
+   code character varying,
+   interval_id character varying,
+   live boolean
+) AS $$
+BEGIN
+   RETURN QUERY
+   SELECT s.id, s.table_id, s.name_long, s.unit_id, s.code, s.interval_id, s.live
+   FROM platform.series s
+   WHERE s.table_id = p_table_id
+   ORDER BY s.id;
+END;
+$$ LANGUAGE plpgsql;
