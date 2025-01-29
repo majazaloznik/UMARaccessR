@@ -4,7 +4,7 @@
 \alias{sql_get_unit_from_series}
 \title{Get unit name from series id}
 \usage{
-sql_get_unit_from_series(con, series_id, schema = "test_platform")
+sql_get_unit_from_series(con, series_id, schema = "platform")
 }
 \arguments{
 \item{con}{Database connection object}

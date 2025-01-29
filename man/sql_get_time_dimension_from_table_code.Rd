@@ -4,11 +4,7 @@
 \alias{sql_get_time_dimension_from_table_code}
 \title{Get time dimension name from table code}
 \usage{
-sql_get_time_dimension_from_table_code(
-  table_code,
-  con,
-  schema = "test_platform"
-)
+sql_get_time_dimension_from_table_code(table_code, con, schema = "platform")
 }
 \arguments{
 \item{table_code}{Character string table code}

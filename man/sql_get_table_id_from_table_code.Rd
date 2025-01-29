@@ -4,7 +4,7 @@
 \alias{sql_get_table_id_from_table_code}
 \title{Get table ID from table code}
 \usage{
-sql_get_table_id_from_table_code(con, table_code, schema = "test_platform")
+sql_get_table_id_from_table_code(con, table_code, schema = "platform")
 }
 \arguments{
 \item{con}{Database connection object}

@@ -4,7 +4,7 @@
 \alias{sql_get_levels_from_dimension_id}
 \title{Get dimension levels from dimension ID}
 \usage{
-sql_get_levels_from_dimension_id(tab_dim_id, con, schema = "test_platform")
+sql_get_levels_from_dimension_id(tab_dim_id, con, schema = "platform")
 }
 \arguments{
 \item{tab_dim_id}{Integer dimension identifier}

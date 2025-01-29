@@ -8,7 +8,7 @@ sql_get_tab_dim_id_from_table_id_and_dimension(
   table_id,
   dimension,
   con,
-  schema = "test_platform"
+  schema = "platform"
 )
 }
 \arguments{

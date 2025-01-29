@@ -4,7 +4,7 @@
 \alias{sql_get_table_name_from_vintage}
 \title{Get table name from vintage ID}
 \usage{
-sql_get_table_name_from_vintage(con, vintage_id, schema = "test_platform")
+sql_get_table_name_from_vintage(con, vintage_id, schema = "platform")
 }
 \arguments{
 \item{con}{Database connection object}

@@ -8,7 +8,7 @@ sql_get_vintage_from_series(
   con,
   series_id,
   date_valid = NULL,
-  schema = "test_platform"
+  schema = "platform"
 )
 }
 \arguments{

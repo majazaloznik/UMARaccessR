@@ -4,7 +4,7 @@
 \alias{sql_get_series_id_from_series_code}
 \title{Get series ID from series code}
 \usage{
-sql_get_series_id_from_series_code(series_code, con, schema = "test_platform")
+sql_get_series_id_from_series_code(series_code, con, schema = "platform")
 }
 \arguments{
 \item{series_code}{Character string series code}

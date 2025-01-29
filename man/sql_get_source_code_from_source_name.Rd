@@ -4,11 +4,7 @@
 \alias{sql_get_source_code_from_source_name}
 \title{Get source ID from source name}
 \usage{
-sql_get_source_code_from_source_name(
-  con,
-  source_name,
-  schema = "test_platform"
-)
+sql_get_source_code_from_source_name(con, source_name, schema = "platform")
 }
 \arguments{
 \item{con}{Database connection object}

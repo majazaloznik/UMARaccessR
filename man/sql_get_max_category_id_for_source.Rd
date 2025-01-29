@@ -4,7 +4,7 @@
 \alias{sql_get_max_category_id_for_source}
 \title{Get maximum category ID for source ID}
 \usage{
-sql_get_max_category_id_for_source(source_id, con, schema = "test_platform")
+sql_get_max_category_id_for_source(source_id, con, schema = "platform")
 }
 \arguments{
 \item{source_id}{Integer source identifier}

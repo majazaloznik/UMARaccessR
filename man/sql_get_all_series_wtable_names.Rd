@@ -4,7 +4,7 @@
 \alias{sql_get_all_series_wtable_names}
 \title{Get all series in the database}
 \usage{
-sql_get_all_series_wtable_names(con, schema = "test_platform")
+sql_get_all_series_wtable_names(con, schema = "platform")
 }
 \arguments{
 \item{con}{Database connection object}

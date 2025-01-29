@@ -4,7 +4,7 @@
 \alias{sql_get_email_from_author_initials}
 \title{Get author email from author initials}
 \usage{
-sql_get_email_from_author_initials(initials, con, schema = "test_platform")
+sql_get_email_from_author_initials(initials, con, schema = "platform")
 }
 \arguments{
 \item{initials}{Character string author initials}

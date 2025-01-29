@@ -4,7 +4,7 @@
 \alias{sql_get_series_from_table_id}
 \title{Get series for table ID}
 \usage{
-sql_get_series_from_table_id(table_id, con, schema = "test_platform")
+sql_get_series_from_table_id(table_id, con, schema = "platform")
 }
 \arguments{
 \item{table_id}{Integer table identifier}

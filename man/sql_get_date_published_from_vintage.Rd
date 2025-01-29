@@ -4,7 +4,7 @@
 \alias{sql_get_date_published_from_vintage}
 \title{Get publication date from vintage ID}
 \usage{
-sql_get_date_published_from_vintage(vintage_id, con, schema = "test_platform")
+sql_get_date_published_from_vintage(vintage_id, con, schema = "platform")
 }
 \arguments{
 \item{vintage_id}{Integer vintage identifier}

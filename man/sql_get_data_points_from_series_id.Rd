@@ -8,7 +8,7 @@ sql_get_data_points_from_series_id(
   con,
   series_id,
   date_valid = NULL,
-  schema = "test_platform"
+  schema = "platform"
 )
 }
 \arguments{

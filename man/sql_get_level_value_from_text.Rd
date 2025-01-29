@@ -4,12 +4,7 @@
 \alias{sql_get_level_value_from_text}
 \title{Get dimension level value from level text}
 \usage{
-sql_get_level_value_from_text(
-  tab_dim_id,
-  level_text,
-  con,
-  schema = "test_platform"
-)
+sql_get_level_value_from_text(tab_dim_id, level_text, con, schema = "platform")
 }
 \arguments{
 \item{tab_dim_id}{Integer table dimension identifier}

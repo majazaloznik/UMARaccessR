@@ -4,7 +4,7 @@
 \alias{sql_get_initials_from_author_name}
 \title{Get author initials from author name}
 \usage{
-sql_get_initials_from_author_name(author_name, con, schema = "test_platform")
+sql_get_initials_from_author_name(author_name, con, schema = "platform")
 }
 \arguments{
 \item{author_name}{Character string author name}

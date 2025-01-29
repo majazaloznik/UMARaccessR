@@ -6,7 +6,7 @@
 #'
 #' @return Character string containing unit name or NULL if not found
 #' @export
-sql_get_unit_from_vintage <- function(con, vintage_id, schema = "test_platform") {
+sql_get_unit_from_vintage <- function(con, vintage_id, schema = "platform") {
 
   result <- UMARimportR::sql_function_call(con,
                                            "get_unit_from_vintage",
@@ -50,7 +50,7 @@ get_unit_from_vintage <- function(vintage, con) {
 #'
 #' @return Character string containing unit name or NULL if not found
 #' @export
-sql_get_unit_from_series <- function(con, series_id, schema = "test_platform") {
+sql_get_unit_from_series <- function(con, series_id, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_unit_from_series",
                                            list(p_series_id = series_id),
@@ -89,7 +89,7 @@ get_unit_from_series <- function(series, con) {
 #'
 #' @return Character string containing series name or NULL if not found
 #' @export
-sql_get_series_name_from_vintage <- function(con, vintage_id, schema = "test_platform") {
+sql_get_series_name_from_vintage <- function(con, vintage_id, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_series_name_from_vintage",
                                            list(p_vintage_id = vintage_id),
@@ -125,7 +125,7 @@ get_series_name_from_vintage <- function(vintage, con) {
 #'
 #' @return Character string containing series name or NULL if not found
 #' @export
-sql_get_series_name_from_series <- function(con, series_id, schema = "test_platform") {
+sql_get_series_name_from_series <- function(con, series_id, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_series_name_from_series",
                                            list(p_series_id = series_id),
@@ -158,7 +158,7 @@ get_series_name_from_series <- function(series, con) {
 #'
 #' @return Character string containing series name or NULL if not found
 #' @export
-sql_get_series_name_from_series_code <- function(con, series_code, schema = "test_platform") {
+sql_get_series_name_from_series_code <- function(con, series_code, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_series_name_from_series_code",
                                            list(p_series_code = series_code),
@@ -193,7 +193,7 @@ get_series_name_from_series_code <- function(series, con) {
 #'
 #' @return Character string containing table name or NULL if not found
 #' @export
-sql_get_table_name_from_vintage <- function(con, vintage_id, schema = "test_platform") {
+sql_get_table_name_from_vintage <- function(con, vintage_id, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_table_name_from_vintage",
                                            list(p_vintage_id = vintage_id),
@@ -230,7 +230,7 @@ get_table_name_from_vintage <- function(vintage, con) {
 #'
 #' @return Character string containing table name or NULL if not found
 #' @export
-sql_get_table_name_from_series <- function(con, series_id, schema = "test_platform") {
+sql_get_table_name_from_series <- function(con, series_id, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_table_name_from_series",
                                            list(p_series_id = series_id),
@@ -264,7 +264,7 @@ get_table_name_from_series <- function(series, con) {
 #'
 #' @return Character string containing interval ID or NULL if not found
 #' @export
-sql_get_interval_from_vintage <- function(con, vintage_id, schema = "test_platform") {
+sql_get_interval_from_vintage <- function(con, vintage_id, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_interval_from_vintage",
                                            list(p_vintage_id = vintage_id),
@@ -304,7 +304,7 @@ get_interval_from_vintage <- function(vintage, con) {
 #'
 #' @return Character string containing interval ID or NULL if not found
 #' @export
-sql_get_interval_from_series <- function(con, series_id, schema = "test_platform") {
+sql_get_interval_from_series <- function(con, series_id, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_interval_from_series",
                                            list(p_series_id = series_id),
@@ -341,7 +341,7 @@ get_interval_from_series <- function(series, con) {
 #' @return Integer vintage ID or NULL if not found
 #' @export
 sql_get_vintage_from_series <- function(con, series_id, date_valid = NULL,
-                                        schema = "test_platform") {
+                                        schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_vintage_from_series",
                                            list(p_series_id = series_id,
@@ -386,7 +386,7 @@ get_vintage_from_series <- function(series, con, date_valid = NULL){
 #' @return Integer vintage ID or NULL if not found
 #' @export
 sql_get_vintage_from_series_code <- function(con, series_code, date_valid = NULL,
-                                             schema = "test_platform") {
+                                             schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_vintage_from_series_code",
                                            list(p_series_code = series_code,
@@ -432,7 +432,7 @@ get_vintage_from_series_code <- function(series_code, con, date_valid = NULL){
 #' @return A data frame with period_id and value columns, ordered by period_id
 #' @export
 #' @importFrom rlang .data
-sql_get_data_points_from_vintage <- function(con, vintage_id, schema = "test_platform") {
+sql_get_data_points_from_vintage <- function(con, vintage_id, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_data_points_from_vintage",
                                            list(p_vintage_id = vintage_id),
@@ -473,7 +473,7 @@ get_data_points_from_vintage <- function(vintage, con){
 #' @return A data frame with period_id and value columns, ordered by period_id
 #' @export
 sql_get_data_points_from_series_id <- function(con, series_id, date_valid = NULL,
-                                            schema = "test_platform") {
+                                            schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_data_points_from_series",
                                            list(p_series_id = series_id,
@@ -535,7 +535,7 @@ mock_get_data_points_from_series_id <- function(con, series_id,  new_name = NULL
 #'
 #' @return POSIXct timestamp with CET timezone
 #' @export
-sql_get_date_published_from_vintage <- function(vintage_id, con, schema = "test_platform") {
+sql_get_date_published_from_vintage <- function(vintage_id, con, schema = "platform") {
   # Convert integer64 to regular numeric
   result <- UMARimportR::sql_function_call(con,
                                           "get_date_published_from_vintage",
@@ -570,7 +570,7 @@ get_date_published_from_vintage <- function(vintage, con){
 #'
 #' @return Character string containing period ID (e.g., "2022M03") or NULL if not found
 #' @export
-sql_get_last_period_from_vintage <- function(con, vintage_id, schema = "test_platform") {
+sql_get_last_period_from_vintage <- function(con, vintage_id, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_last_period_from_vintage",
                                            list(p_vintage_id = vintage_id),
@@ -607,7 +607,7 @@ get_last_period_from_vintage <- function(vintage, con){
 #'
 #' @return Data frame with a row for each series containing table and unit information
 #' @export
-sql_get_all_series_wtable_names <- function(con, schema = "test_platform") {
+sql_get_all_series_wtable_names <- function(con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_all_series_wtable_names",
                                            args = NULL,  # Pass NULL instead of empty list
@@ -690,7 +690,7 @@ ORDER BY "table_code", "series_code"')
 #'
 #' @return Integer source ID or NULL if not found
 #' @export
-sql_get_source_code_from_source_name <- function(con, source_name, schema = "test_platform") {
+sql_get_source_code_from_source_name <- function(con, source_name, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_source_code_from_source_name",
                                            list(p_source_name = source_name),
@@ -721,7 +721,7 @@ get_source_code_from_source_name <- function(name, con){
 #'
 #' @return Numeric table ID or NA if not found
 #' @export
-sql_get_table_id_from_table_code <- function(con, table_code, schema = "test_platform") {
+sql_get_table_id_from_table_code <- function(con, table_code, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_table_id_from_table_code",
                                            list(p_table_code = table_code),
@@ -774,7 +774,7 @@ get_dim_id_from_table_id <- function(id, dimension, con){
 #' @return Numeric code or NA if not found
 #' @export
 sql_get_tab_dim_id_from_table_id_and_dimension <- function(table_id, dimension, con,
-                                                           schema = "test_platform") {
+                                                           schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_tab_dim_id_from_table_id_and_dimension",
                                            list(p_table_id = table_id,
@@ -810,7 +810,7 @@ get_tab_dim_id_from_table_id_and_dimension <- function(id, dimension, con){
 #'
 #' @return Integer unit ID or NULL if not found
 #' @export
-sql_get_unit_id_from_unit_name <- function(unit_name, con, schema = "test_platform") {
+sql_get_unit_id_from_unit_name <- function(unit_name, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_unit_id_from_unit_name",
                                            list(p_unit_name = unit_name),
@@ -842,7 +842,7 @@ get_unit_id_from_unit_name <- function(name, con){
 #'
 #' @return Data frame of series IDs or NULL if none found
 #' @export
-sql_get_series_ids_from_table_id <- function(table_id, con, schema = "test_platform") {
+sql_get_series_ids_from_table_id <- function(table_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_series_ids_from_table_id",
                                            list(p_table_id = table_id),
@@ -873,7 +873,7 @@ get_series_ids_from_table_id <- function(id, con){
 #'
 #' @return Data frame containing dimension levels information or NULL if none found
 #' @export
-sql_get_dimension_levels_from_table_id <- function(table_id, con, schema = "test_platform") {
+sql_get_dimension_levels_from_table_id <- function(table_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_dimension_levels_from_table_id",
                                            list(p_table_id = table_id),
@@ -890,7 +890,7 @@ sql_get_dimension_levels_from_table_id <- function(table_id, con, schema = "test
 #'
 #' @return Numeric series ID or NA if not found
 #' @export
-sql_get_series_id_from_series_code <- function(series_code, con, schema = "test_platform") {
+sql_get_series_id_from_series_code <- function(series_code, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_series_id_from_series_code",
                                            list(p_series_code = series_code),
@@ -924,7 +924,7 @@ get_series_id_from_series_code <- function(series_code, con){
 #'
 #' @return Integer maximum category ID or 0 if none found
 #' @export
-sql_get_max_category_id_for_source <- function(source_id, con, schema = "test_platform") {
+sql_get_max_category_id_for_source <- function(source_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_max_category_id_for_source",
                                            list(p_source_id = source_id),
@@ -954,7 +954,7 @@ get_max_category_id_for_source <- function(source_id, con){
 #'
 #' @return Character string containing author initials or NA if not found
 #' @export
-sql_get_initials_from_author_name <- function(author_name, con, schema = "test_platform") {
+sql_get_initials_from_author_name <- function(author_name, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_initials_from_author_name",
                                            list(p_author_name = author_name),
@@ -987,7 +987,7 @@ get_initials_from_author_name <- function(name, con){
 #'
 #' @return Character string containing author email or NA if not found
 #' @export
-sql_get_email_from_author_initials <- function(initials, con, schema = "test_platform") {
+sql_get_email_from_author_initials <- function(initials, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_email_from_author_initials",
                                            list(p_initials = initials),
@@ -1022,7 +1022,7 @@ get_email_from_author_initials <- function(initials, con){
 #' @return Character string level value or NULL if not found
 #' @export
 sql_get_level_value_from_text <- function(tab_dim_id, level_text, con,
-                                          schema = "test_platform") {
+                                          schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_level_value_from_text",
                                            list(p_tab_dim_id = tab_dim_id,
@@ -1041,7 +1041,7 @@ sql_get_level_value_from_text <- function(tab_dim_id, level_text, con,
 #'
 #' @return Character string time dimension name or NULL if not found
 #' @export
-sql_get_time_dimension_from_table_code <- function(table_code, con, schema = "test_platform") {
+sql_get_time_dimension_from_table_code <- function(table_code, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_time_dimension_from_table_code",
                                            list(p_table_code = table_code),
@@ -1060,7 +1060,7 @@ sql_get_time_dimension_from_table_code <- function(table_code, con, schema = "te
 #'
 #' @return Vector of publication timestamps or NULL if none found
 #' @export
-sql_get_last_publication_date_from_table_id <- function(table_id, con, schema = "test_platform") {
+sql_get_last_publication_date_from_table_id <- function(table_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_last_publication_date_from_table_id",
                                            list(p_table_id = table_id),
@@ -1077,7 +1077,7 @@ sql_get_last_publication_date_from_table_id <- function(table_id, con, schema = 
 #'
 #' @return Data frame containing dimension names and IDs, or NULL if none found
 #' @export
-sql_get_non_time_dimensions_from_table_id <- function(table_id, con, schema = "test_platform") {
+sql_get_non_time_dimensions_from_table_id <- function(table_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                           "get_non_time_dimensions_from_table_id",
                                           list(p_table_id = table_id),
@@ -1096,7 +1096,7 @@ sql_get_non_time_dimensions_from_table_id <- function(table_id, con, schema = "t
 #' @return Integer dimension ID or NULL if not found
 #' @export
 sql_get_dimension_id_from_table_id_and_dimension <- function(table_id, dimension, con,
-                                                             schema = "test_platform") {
+                                                             schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_dimension_id_from_table_id_and_dimension",
                                            list(p_table_id = table_id,
@@ -1114,7 +1114,7 @@ sql_get_dimension_id_from_table_id_and_dimension <- function(table_id, dimension
 #'
 #' @return Data frame containing dimension levels or NULL if none found
 #' @export
-sql_get_levels_from_dimension_id <- function(tab_dim_id, con, schema = "test_platform") {
+sql_get_levels_from_dimension_id <- function(tab_dim_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_levels_from_dimension_id",
                                            list(p_tab_dim_id = tab_dim_id),
@@ -1150,7 +1150,7 @@ sql_get_dimensions_from_table_id <- function(table_id, con, schema = "platform")
 #'
 #' @return Data frame containing series information or NULL if none found
 #' @export
-sql_get_series_from_table_id <- function(table_id, con, schema = "test_platform") {
+sql_get_series_from_table_id <- function(table_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_series_from_table_id",
                                            list(p_table_id = table_id),

@@ -4,11 +4,7 @@
 \alias{sql_get_series_name_from_series_code}
 \title{Get series name from series code}
 \usage{
-sql_get_series_name_from_series_code(
-  con,
-  series_code,
-  schema = "test_platform"
-)
+sql_get_series_name_from_series_code(con, series_code, schema = "platform")
 }
 \arguments{
 \item{con}{Database connection object}

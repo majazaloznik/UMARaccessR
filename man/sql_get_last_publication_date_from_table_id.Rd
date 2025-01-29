@@ -4,11 +4,7 @@
 \alias{sql_get_last_publication_date_from_table_id}
 \title{Get publication dates for table ID}
 \usage{
-sql_get_last_publication_date_from_table_id(
-  table_id,
-  con,
-  schema = "test_platform"
-)
+sql_get_last_publication_date_from_table_id(table_id, con, schema = "platform")
 }
 \arguments{
 \item{table_id}{Integer table identifier}
