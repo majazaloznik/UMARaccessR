@@ -7,6 +7,7 @@
 sql_get_data_points_from_series_id(
   con,
   series_id,
+  new_name = NULL,
   date_valid = NULL,
   schema = "platform"
 )
@@ -15,6 +16,8 @@ sql_get_data_points_from_series_id(
 \item{con}{Database connection object}
 
 \item{series_id}{Integer series identifier}
+
+\item{new_name}{character string to rename the value column}
 
 \item{date_valid}{Timestamp when the vintage was valid (optional)}
 

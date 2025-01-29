@@ -467,65 +467,25 @@ get_data_points_from_vintage <- function(vintage, con){
 #'
 #' @param con Database connection object
 #' @param series_id Integer series identifier
+#' @param new_name character string to rename the value column
 #' @param date_valid Timestamp when the vintage was valid (optional)
 #' @param schema Character string specifying the database schema
 #'
 #' @return A data frame with period_id and value columns, ordered by period_id
 #' @export
-sql_get_data_points_from_series_id <- function(con, series_id, date_valid = NULL,
-                                            schema = "platform") {
+sql_get_data_points_from_series_id <- function(con, series_id, new_name = NULL,
+                                               date_valid = NULL,
+                                               schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_data_points_from_series",
                                            list(p_series_id = series_id,
                                                 p_date_valid = date_valid),
                                            schema)
   if (nrow(result) == 0) return(NULL)
-  return(result)
-}
-
-#' Get data points for series from latest vintage (Mock version for fixture recording)
-#'
-#' @param con Database connection object
-#' @param series_id Integer series identifier
-#' @param new_name character string to rename the value column
-#' @param date_valid Optional timestamp for vintage selection
-#' @param schema Character string specifying the database schema, defaults to "platform"
-#'
-#' @return Data frame with period_id and value columns
-#' @export
-mock_get_data_points_from_series_id <- function(con, series_id,  new_name = NULL,
-                                                date_valid = NULL,
-                                             schema = "platform") {
-  date_condition <- if (!is.null(date_valid)) {
-    sprintf("AND published < '%s'", format(date_valid, "%Y-%m-%d %H:%M:%S"))
-  } else {
-    ""
-  }
-
-  query <- sprintf(
-    "SELECT dp.period_id, dp.value
-     FROM %s.vintage v
-     JOIN %s.data_points dp ON dp.vintage_id = v.id
-     WHERE v.series_id = %d
-     %s
-     AND v.id = (
-         SELECT id
-         FROM %s.vintage v2
-         WHERE v2.series_id = %d
-         %s
-         ORDER BY published DESC
-         LIMIT 1
-     )
-     ORDER BY dp.period_id",
-    schema, schema, series_id, date_condition,
-    schema, series_id, date_condition
-  )
-
-  result <- DBI::dbGetQuery(con, query)
-  if (nrow(result) == 0) return(NULL)
   if(!is.null(new_name)) result <- result |> dplyr::rename({{new_name}} := value)
   return(result)
 }
+
 
 #' Get publication date from vintage ID
 #'
