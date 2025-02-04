@@ -768,14 +768,16 @@ get_tab_dim_id_from_table_id_and_dimension <- function(id, dimension, con){
 #' @param unit_name Character string with unit name
 #' @param schema Character string specifying the database schema
 #'
-#' @return Integer unit ID or NULL if not found
+#' @return Integer unit ID or NA if not found
 #' @export
-sql_get_unit_id_from_unit_name <- function(unit_name, con, schema = "platform") {
+sql_get_unit_id_from_unit_name <- function(unit_name, con, schema = "test_platform") {
+  if (is.na(unit_name)) return(NA_integer_)  # Handle NA input
+
   result <- UMARimportR::sql_function_call(con,
                                            "get_unit_id_from_unit_name",
                                            list(p_unit_name = unit_name),
                                            schema)
-  if (nrow(result) == 0) return(NULL)
+  if (nrow(result) == 0) return(NA_integer_)  # Return NA instead of NULL
   return(result$id[1])
 }
 

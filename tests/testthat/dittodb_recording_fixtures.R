@@ -460,7 +460,12 @@ source("tests/testthat/helper-connection.R")
 # sql_get_unit_id_from_unit_name("mio eur", con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
-#
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_unit_id_from_unit_name("", con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+
 # start_db_capturing()
 # con <- make_test_connection()
 # sql_get_series_ids_from_table_id(21L, con, schema = "test_platform")

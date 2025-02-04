@@ -4,7 +4,7 @@
 \alias{sql_get_unit_id_from_unit_name}
 \title{Get unit ID from unit name}
 \usage{
-sql_get_unit_id_from_unit_name(unit_name, con, schema = "platform")
+sql_get_unit_id_from_unit_name(unit_name, con, schema = "test_platform")
 }
 \arguments{
 \item{unit_name}{Character string with unit name}
@@ -14,7 +14,7 @@ sql_get_unit_id_from_unit_name(unit_name, con, schema = "platform")
 \item{schema}{Character string specifying the database schema}
 }
 \value{
-Integer unit ID or NULL if not found
+Integer unit ID or NA if not found
 }
 \description{
 Get unit ID from unit name

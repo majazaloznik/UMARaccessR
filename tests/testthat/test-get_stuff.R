@@ -141,6 +141,8 @@ test_that("new get functions work correctly", {
     expect_equal(result, 63)
     result <- sql_get_unit_id_from_unit_name("mio eur", con, schema = "test_platform")
     expect_equal(result, 2)
+    result <- sql_get_unit_id_from_unit_name("", con, schema = "test_platform")
+    expect_true(is.na(result))
     result <- sql_get_series_ids_from_table_id(21L, con, schema = "test_platform")
     expect_s3_class(result, "data.frame")
     expect_named(result, "id")
