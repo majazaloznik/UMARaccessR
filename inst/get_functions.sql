@@ -570,3 +570,31 @@ BEGIN
    ORDER BY s.id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- Function: get_dimension_position_from_table
+-- Description: Returns position of non-time dimension in ordered list of dimensions
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_dimension_position_from_table(
+    p_table_id integer,
+    p_dimension_name character varying
+)
+RETURNS integer AS $$
+DECLARE
+    v_position integer;
+BEGIN
+    WITH ranked_dimensions AS (
+        SELECT
+            dimension,
+            ROW_NUMBER() OVER (ORDER BY id) as position
+        FROM platform.table_dimensions
+        WHERE table_id = p_table_id
+        AND is_time = false
+    )
+    SELECT position INTO v_position
+    FROM ranked_dimensions
+    WHERE dimension = p_dimension_name;
+
+    RETURN v_position;
+END;
+$$ LANGUAGE plpgsql;

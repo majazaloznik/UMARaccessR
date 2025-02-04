@@ -222,6 +222,21 @@ test_that("new get functions work correctly", {
     expect_true(nrow(result) > 0)
     if (nrow(result) > 1) {
       expect_true(all(diff(result$id) > 0))}
+    result <- sql_get_dimension_position_from_table(
+      15L, "EKONOMSKI KAZALNIKI", con, schema = "test_platform")
+    expect_type(result, "integer")
+    expect_length(result, 1)
+    expect_false(is.na(result))
+    expect_true(result == 2)
+    result_na <- sql_get_dimension_position_from_table(
+      15L, "NONEXISTENT", con, schema = "test_platform" )
+    expect_true(is.na(result_na))
   })
 dbDisconnect(con)
 })
+
+
+
+
+
+

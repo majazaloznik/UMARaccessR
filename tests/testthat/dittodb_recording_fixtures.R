@@ -595,4 +595,11 @@ sql_get_series_from_table_id(20L, con, schema = "test_platform")
 DBI::dbDisconnect(con)
 stop_db_capturing()
 
+start_db_capturing()
+con <- make_test_connection()
+sql_get_dimension_position_from_table(15L, "EKONOMSKI KAZALNIKI", con, schema = "test_platform")
+sql_get_dimension_position_from_table(15L, "NONEXISTENT", con, schema = "test_platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()
+
 

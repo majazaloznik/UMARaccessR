@@ -1120,3 +1120,27 @@ sql_get_series_from_table_id <- function(table_id, con, schema = "platform") {
   if (nrow(result) == 0) return(NULL)
   return(result)
 }
+
+
+#' Get dimension position in table
+#'
+#' Returns the position of a non-time dimension in the ordered list of dimensions
+#' for a given table.
+#'
+#' @param con Database connection object
+#' @param table_id Integer table identifier
+#' @param dimension_name Character string dimension name
+#' @param schema Character string specifying the database schema
+#'
+#' @return Integer position or NA if dimension not found
+#' @export
+sql_get_dimension_position_from_table <- function(table_id, dimension_name, con,
+                                                  schema = "test_platform") {
+  result <- UMARimportR::sql_function_call(con,
+                                           "get_dimension_position_from_table",
+                                           list(p_table_id = table_id,
+                                                p_dimension_name = dimension_name),
+                                           schema)
+  if (nrow(result) == 0) return(NA_integer_)
+  return(result[[1]])
+}

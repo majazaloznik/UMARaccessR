@@ -1748,3 +1748,57 @@ EXCEPTION WHEN OTHERS THEN
    RAISE;
 END $$;
 ROLLBACK;
+
+
+-- ============================================================================
+-- Tests for get_dimension_position_from_table
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+    v_table_id integer;
+    v_position integer;
+BEGIN
+    RAISE NOTICE 'Starting get_dimension_position_from_table tests...';
+
+    -- Create prerequisites
+    INSERT INTO platform.table (code, name, source_id, url)
+    VALUES ('TEST_TABLE', 'Test Table', 1, 'http://test.com')
+    RETURNING id INTO v_table_id;
+
+    -- Create multiple dimensions in specific order
+    INSERT INTO platform.table_dimensions (table_id, dimension, is_time)
+    VALUES
+        (v_table_id, 'time_dim', true),       -- Should be ignored (is_time = true)
+        (v_table_id, 'region', false),        -- Position 1
+        (v_table_id, 'category', false),      -- Position 2
+        (v_table_id, 'subcategory', false);   -- Position 3
+
+    -- Test 1: Get position of middle dimension
+    SELECT platform.get_dimension_position_from_table(v_table_id, 'category')
+    INTO v_position;
+
+    ASSERT v_position = 2,
+        format('Category should be position 2 but got %s', v_position);
+
+    -- Test 2: Get position of first dimension
+    SELECT platform.get_dimension_position_from_table(v_table_id, 'region')
+    INTO v_position;
+
+    ASSERT v_position = 1,
+        format('Region should be position 1 but got %s', v_position);
+
+    -- Test 3: Non-existent dimension
+    SELECT platform.get_dimension_position_from_table(v_table_id, 'nonexistent')
+    INTO v_position;
+
+    ASSERT v_position IS NULL,
+        'Should return null for non-existent dimension';
+
+    RAISE NOTICE 'All tests passed successfully';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+ROLLBACK;
