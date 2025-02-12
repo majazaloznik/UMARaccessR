@@ -839,7 +839,8 @@ sql_get_dimension_levels_from_table_id <- function(table_id, con, schema = "plat
   result <- UMARimportR::sql_function_call(con,
                                            "get_dimension_levels_from_table_id",
                                            list(p_table_id = table_id),
-                                           schema)
+                                           schema) |>
+    dplyr::mutate(tab_dim_id = as.numeric(tab_dim_id))
   if (nrow(result) == 0) return(NULL)
   return(result)
 }
