@@ -496,7 +496,6 @@ sql_get_data_points_from_series_id <- function(con, series_id, new_name = NULL,
 #' @return POSIXct timestamp with CET timezone
 #' @export
 sql_get_date_published_from_vintage <- function(vintage_id, con, schema = "platform") {
-  # Convert integer64 to regular numeric
   result <- UMARimportR::sql_function_call(con,
                                           "get_date_published_from_vintage",
                                           list(p_vintage_id = vintage_id),
@@ -808,7 +807,8 @@ sql_get_series_ids_from_table_id <- function(table_id, con, schema = "platform")
   result <- UMARimportR::sql_function_call(con,
                                            "get_series_ids_from_table_id",
                                            list(p_table_id = table_id),
-                                           schema)
+                                           schema) |>
+    dplyr::mutate(id = as.numeric(id))
   if (nrow(result) == 0) return(NULL)
   return(result)
 }
