@@ -1044,7 +1044,8 @@ sql_get_non_time_dimensions_from_table_id <- function(table_id, con, schema = "p
   result <- UMARimportR::sql_function_call(con,
                                           "get_non_time_dimensions_from_table_id",
                                           list(p_table_id = table_id),
-                                          schema)
+                                          schema) |>
+    dplyr::mutate(id = as.numeric(id))
   if (nrow(result) == 0) return(NULL)
   return(result)
 }

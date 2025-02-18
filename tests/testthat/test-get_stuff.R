@@ -184,7 +184,7 @@ test_that("new get functions work correctly", {
     expect_s3_class(result, "data.frame")
     expect_named(result, c("dimension", "id"))
     expect_type(result$dimension, "character")
-    expect_type(result$id, "double")  # bigint comes back as double
+    expect_s3_class(result$id, "numeric")
     expect_true(nrow(result) == 2)
     result <- sql_get_dimension_id_from_table_id_and_dimension(
       20L, "MERITVE", con, schema = "test_platform")
