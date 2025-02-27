@@ -8,13 +8,13 @@ sql_get_vintage_from_series(
   con,
   series_id,
   date_valid = NULL,
-  schema = "platform"
+  schema = "test_platform"
 )
 }
 \arguments{
 \item{con}{Database connection object}
 
-\item{series_id}{Integer series identifier}
+\item{series_id}{Integer series identifier, single or vector or column}
 
 \item{date_valid}{Timestamp when the vintage was valid (optional)}
 

@@ -23,6 +23,7 @@ Imports:
     magrittr (>= 2.0.3),
     openxlsx,
     rlang (>= 1.0.3),
-    UMARimportR
+    UMARimportR, 
+    purrr
 Remotes: 
     majazaloznik/UMARimportR

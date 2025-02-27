@@ -334,21 +334,37 @@ get_interval_from_series <- function(series, con) {
 #' Get vintage ID from series ID
 #'
 #' @param con Database connection object
-#' @param series_id Integer series identifier
+#' @param series_id Integer series identifier, single or vector or column
 #' @param date_valid Timestamp when the vintage was valid (optional)
 #' @param schema Character string specifying the database schema
 #'
 #' @return Integer vintage ID or NULL if not found
 #' @export
-sql_get_vintage_from_series <- function(con, series_id, date_valid = NULL,
-                                        schema = "platform") {
-  result <- UMARimportR::sql_function_call(con,
-                                           "get_vintage_from_series",
-                                           list(p_series_id = series_id,
-                                                p_date_valid = date_valid),
-                                           schema)
-  if (nrow(result) == 0) return(NULL)
-  return(result$id[1])
+sql_get_vintage_from_series <- function(con, series_id, date_valid = NULL, schema = "test_platform") {
+  if (length(series_id) > 1) {
+    return(purrr::map_dbl(
+      series_id,
+      function(id) {
+        if (is.na(id)) return(NA_real_)
+        result <- UMARimportR::sql_function_call(con,
+                                                 "get_vintage_from_series",
+                                                 list(p_series_id = id,
+                                                      p_date_valid = date_valid),
+                                                 schema)
+        if (nrow(result) == 0) return(NA_real_)
+        return(result$id[1])
+      }
+    ))
+  } else {
+    if (is.na(series_id)) return(NULL)
+    result <- UMARimportR::sql_function_call(con,
+                                             "get_vintage_from_series",
+                                             list(p_series_id = series_id,
+                                                  p_date_valid = date_valid),
+                                             schema)
+    if (nrow(result) == 0) return(NULL)
+    return(result$id[1])
+  }
 }
 
 #' Get vintage id from series id

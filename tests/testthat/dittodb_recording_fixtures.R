@@ -402,8 +402,18 @@ source("tests/testthat/helper-connection.R")
 #   con, 361L,
 #   date_valid = as.POSIXct("2024-01-01"),
 #   schema = "test_platform")
+# sql_get_vintage_from_series(
+#   con, c(361, 362, 363),
+#   date_valid = as.POSIXct("2024-01-01"),
+#   schema = "test_platform")
+# ids <- data.frame(id = c(361, 362, 363))
+# sql_get_vintage_from_series(
+#   con, ids$id ,
+#   date_valid = as.POSIXct("2024-01-01"),
+#   schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
+#
 #
 #
 # start_db_capturing()
@@ -548,11 +558,11 @@ source("tests/testthat/helper-connection.R")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
 #
-# start_db_capturing()
-# con <- make_test_connection()
-# sql_get_non_time_dimensions_from_table_id(21L, con, schema = "test_platform")
-# DBI::dbDisconnect(con)
-# stop_db_capturing()
+start_db_capturing()
+con <- make_test_connection()
+sql_get_non_time_dimensions_from_table_id(21L, con, schema = "test_platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()
 #
 # start_db_capturing()
 # con <- make_test_connection()
@@ -561,45 +571,45 @@ source("tests/testthat/helper-connection.R")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
 #
-start_db_capturing()
-con <- make_test_connection()
-sql_get_levels_from_dimension_id(47L, con, schema = "test_platform")
-DBI::dbDisconnect(con)
-stop_db_capturing()
-
-start_db_capturing()
-con <- make_test_connection()
-series_ids <-  c(1895, 361)
-dates_valid <- as.Date("2023-03-25")
-for(sid in series_ids) {
-  result <- mock_get_data_points_from_series_id(con, sid, NULL, dates_valid,
-                                                schema = "test_platform")
-  print(sprintf("Recorded series %d current data with %d rows",
-                sid, nrow(result)))}
-for(sid in series_ids) {
-  result <- mock_get_data_points_from_series_id(con, sid, "test", schema = "test_platform")
-  print(sprintf("Recorded series %d current data with %d rows",
-                sid, nrow(result)))}
-DBI::dbDisconnect(con)
-stop_db_capturing()
-
-start_db_capturing()
-con <- make_test_connection()
-result <- sql_get_dimensions_from_table_id(20L, con, schema = "test_platform")
-DBI::dbDisconnect(con)
-stop_db_capturing()
-
-start_db_capturing()
-con <- make_test_connection()
-sql_get_series_from_table_id(20L, con, schema = "test_platform")
-DBI::dbDisconnect(con)
-stop_db_capturing()
-
-start_db_capturing()
-con <- make_test_connection()
-sql_get_dimension_position_from_table(15L, "EKONOMSKI KAZALNIKI", con, schema = "test_platform")
-sql_get_dimension_position_from_table(15L, "NONEXISTENT", con, schema = "test_platform")
-DBI::dbDisconnect(con)
-stop_db_capturing()
-
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_levels_from_dimension_id(47L, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# series_ids <-  c(1895, 361)
+# dates_valid <- as.Date("2023-03-25")
+# for(sid in series_ids) {
+#   result <- mock_get_data_points_from_series_id(con, sid, NULL, dates_valid,
+#                                                 schema = "test_platform")
+#   print(sprintf("Recorded series %d current data with %d rows",
+#                 sid, nrow(result)))}
+# for(sid in series_ids) {
+#   result <- mock_get_data_points_from_series_id(con, sid, "test", schema = "test_platform")
+#   print(sprintf("Recorded series %d current data with %d rows",
+#                 sid, nrow(result)))}
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# result <- sql_get_dimensions_from_table_id(20L, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_series_from_table_id(20L, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_dimension_position_from_table(15L, "EKONOMSKI KAZALNIKI", con, schema = "test_platform")
+# sql_get_dimension_position_from_table(15L, "NONEXISTENT", con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+#
 

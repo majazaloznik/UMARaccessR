@@ -108,6 +108,12 @@ test_that("new get functions work correctly", {
       date_valid = as.POSIXct("2024-01-01"),
       schema = "test_platform")
     expect_equal(result_date, 84435)
+    ids <- data.frame(id = c(361, 362, 363))
+    result <- sql_get_vintage_from_series(
+      con, ids$id ,
+      date_valid = as.POSIXct("2024-01-01"),
+      schema = "test_platform")
+    expect_equal(result, c(84435, 84436, 84437))
     result <- sql_get_vintage_from_series_code(con, "SURS--0300220S--BTE--V--N--Q",
                                                date_valid = as.POSIXct("2024-01-01"),
                                                schema = "test_platform")
