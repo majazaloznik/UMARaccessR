@@ -1802,3 +1802,105 @@ EXCEPTION WHEN OTHERS THEN
     RAISE;
 END $$;
 ROLLBACK;
+
+-- ============================================================================
+-- Tests for get_tables_with_keep_vintage
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+    v_table_id1 bigint;
+    v_table_id2 bigint;
+    v_count integer;
+BEGIN
+    RAISE NOTICE 'Starting get_tables_with_keep_vintage tests...';
+
+    -- Create test tables with different keep_vintage values
+    INSERT INTO platform.table (code, name, source_id, keep_vintage)
+    VALUES ('TEST_KEEP_T', 'Test Keep Vintage True', 1, TRUE)
+    RETURNING id INTO v_table_id1;
+
+    INSERT INTO platform.table (code, name, source_id, keep_vintage)
+    VALUES ('TEST_KEEP_F', 'Test Keep Vintage False', 1, FALSE)
+    RETURNING id INTO v_table_id2;
+
+    -- Test 1: Get tables with keep_vintage = TRUE
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_tables_with_keep_vintage(TRUE)
+    WHERE id = v_table_id1;
+
+    ASSERT v_count = 1,
+        format('Should return one table with keep_vintage = TRUE, but got %s', v_count);
+
+    -- Test 2: Get tables with keep_vintage = FALSE
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_tables_with_keep_vintage(FALSE)
+    WHERE id = v_table_id2;
+
+    ASSERT v_count = 1,
+        format('Should return one table with keep_vintage = FALSE, but got %s', v_count);
+
+    -- Test 3: Check specific values
+    ASSERT EXISTS (
+        SELECT 1
+        FROM platform.get_tables_with_keep_vintage(TRUE)
+        WHERE code = 'TEST_KEEP_T'
+    ), 'Should return the correct table with keep_vintage = TRUE';
+
+    ASSERT EXISTS (
+        SELECT 1
+        FROM platform.get_tables_with_keep_vintage(FALSE)
+        WHERE code = 'TEST_KEEP_F'
+    ), 'Should return the correct table with keep_vintage = FALSE';
+
+    RAISE NOTICE 'All tests passed successfully';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+ROLLBACK;
+
+-- ============================================================================
+-- Tests for get_category_id_from_name
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+    v_source_id integer := 1;
+    v_category_id integer;
+    v_result integer;
+BEGIN
+    RAISE NOTICE 'Starting get_category_id_from_name tests...';
+
+    -- Create test category
+    INSERT INTO platform.category (id, name, source_id)
+    VALUES (9999, 'Test Category Name', v_source_id);
+
+    -- Remember the inserted ID
+    v_category_id := 9999;
+
+    -- Test 1: Basic retrieval
+    SELECT id INTO v_result
+    FROM platform.get_category_id_from_name('Test Category Name', v_source_id);
+
+    ASSERT v_result = v_category_id,
+        format('Category ID should be %s but got %s', v_category_id, v_result);
+
+    -- Test 2: Non-existent category name
+    ASSERT NOT EXISTS (
+        SELECT 1 FROM platform.get_category_id_from_name('Nonexistent Category', v_source_id)
+    ), 'Should return empty for non-existent category name';
+
+    -- Test 3: Wrong source ID
+    ASSERT NOT EXISTS (
+        SELECT 1 FROM platform.get_category_id_from_name('Test Category Name', v_source_id + 1)
+    ), 'Should return empty when source ID does not match';
+
+    RAISE NOTICE 'All tests passed successfully';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+ROLLBACK;

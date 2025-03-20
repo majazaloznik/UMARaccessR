@@ -612,4 +612,21 @@ stop_db_capturing()
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
 #
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_tables_with_keep_vintage(TRUE, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_tables_with_keep_vintage(FALSE, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+
+start_db_capturing()
+con <- make_test_connection()
+sql_get_category_id_from_name("Podjetja", con, source_id = 1, schema = "test_platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()
 

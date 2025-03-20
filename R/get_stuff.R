@@ -1162,3 +1162,44 @@ sql_get_dimension_position_from_table <- function(table_id, dimension_name, con,
   if (nrow(result) == 0) return(NA_integer_)
   return(result[[1]])
 }
+
+#' Get tables with keep vintage true or false
+#'
+#' @param con Database connection object
+#' @param keep logical value for keep vintage
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame containing table information with id, code and name or NULL if none found
+#' @export
+sql_get_tables_with_keep_vintage <- function(keep, con, schema = "platform") {
+  result <- UMARimportR::sql_function_call(con,
+                                           "get_tables_with_keep_vintage",
+                                           list(p_keep_vintage = keep),
+                                           schema)
+  if (nrow(result) == 0) return(NULL)
+  return(result)
+}
+
+#' Get category ID from category name
+#'
+#' @param con Database connection object
+#' @param category_name Character string with category name
+#' @param source_id Integer source identifier (optional, defaults to 1 for SURS)
+#' @param schema Character string specifying the database schema
+#'
+#' @return Integer category ID or NULL if not found
+#' @export
+sql_get_category_id_from_name <- function(category_name, con, source_id = 1, schema = "platform") {
+  result <- UMARimportR::sql_function_call(
+    con,
+    "get_category_id_from_name",
+    list(
+      p_category_name = category_name,
+      p_source_id = source_id
+    ),
+    schema
+  )
+
+  if (nrow(result) == 0) return(NULL)
+  return(result$id[1])
+}

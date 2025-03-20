@@ -31,6 +31,23 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- ============================================================================
+-- Function: get_category_id_from_name
+-- Description: Retrieves category ID for a given category name and source ID
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_category_id_from_name(
+    p_category_name text,
+    p_source_id integer
+)
+RETURNS TABLE (id integer) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT c.id
+    FROM platform.category c
+    WHERE c.name = p_category_name
+    AND c.source_id = p_source_id;
+END;
+$$ LANGUAGE plpgsql;
 
 -- ============================================================================
 -- Function: get_series_name_from_vintage
@@ -596,5 +613,44 @@ BEGIN
     WHERE dimension = p_dimension_name;
 
     RETURN v_position;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- Function: get_tables_with_keep_vintage
+-- Description: Returns tables with specified keep_vintage value
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_tables_with_keep_vintage(
+    p_keep_vintage boolean
+)
+RETURNS TABLE (
+    id bigint,
+    code character varying,
+    name character varying
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT t.id, t.code, t.name
+    FROM platform."table" t
+    WHERE t.keep_vintage = p_keep_vintage
+    ORDER BY t.id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- Function: get_category_id_from_name
+-- Description: Retrieves category ID for a given category name and source ID
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_category_id_from_name(
+    p_category_name text,
+    p_source_id integer
+)
+RETURNS TABLE (id integer) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT c.id
+    FROM platform.category c
+    WHERE c.name = p_category_name
+    AND c.source_id = p_source_id;
 END;
 $$ LANGUAGE plpgsql;
