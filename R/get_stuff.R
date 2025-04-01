@@ -1134,7 +1134,8 @@ sql_get_series_from_table_id <- function(table_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_series_from_table_id",
                                            list(p_table_id = table_id),
-                                           schema)
+                                           schema) |>
+    dplyr::mutate(id = as.numeric(id))
   if (nrow(result) == 0) return(NULL)
   return(result)
 }
@@ -1202,4 +1203,24 @@ sql_get_category_id_from_name <- function(category_name, con, source_id = 1, sch
 
   if (nrow(result) == 0) return(NULL)
   return(result$id[1])
+}
+
+#' Get category ID from category name
+#'
+#' @param con Database connection object
+#' @param series_id series id
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame with hashes
+#' @export
+sql_get_vintages_with_hashes_from_series_id <- function(series_id, con,  schema = "platform") {
+  result <- UMARimportR::sql_function_call(
+    con,
+    "get_vintages_with_hashes_for_series",
+    list(
+      p_series_id = series_id),
+    schema)
+
+  if (nrow(result) == 0) return(NULL)
+  return(result)
 }

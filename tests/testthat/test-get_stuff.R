@@ -250,6 +250,10 @@ test_that("new get functions work correctly", {
     expect_type(result, "integer")
     expect_length(result, 1)
     expect_equal(result, 97)
+    result <- sql_get_vintages_with_hashes_from_series_id(1917, con, schema = "test_platform")
+    expect_s3_class(result, "data.frame")
+    expect_named(result, c("id", "series_id", "published", "full_hash", "partial_hash"))
+
   })
 dbDisconnect(con)
 })

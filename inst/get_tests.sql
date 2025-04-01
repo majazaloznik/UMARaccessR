@@ -1904,3 +1904,125 @@ EXCEPTION WHEN OTHERS THEN
     RAISE;
 END $$;
 ROLLBACK;
+
+-- ============================================================================
+-- Test for get_vintages_with_hashes_for_series function
+-- ============================================================================
+BEGIN;
+
+DO $$
+DECLARE
+    v_table_id INTEGER;
+    v_series_id INTEGER;
+    v_v1_id INTEGER;
+    v_v2_id INTEGER;
+    v_v3_id INTEGER;
+    result_count INTEGER;
+    first_id INTEGER;
+    first_full_hash TEXT;
+    first_partial_hash TEXT;
+    full_hash_count INTEGER;
+    partial_hash_count INTEGER;
+BEGIN
+    RAISE NOTICE 'Starting tests for get_vintages_with_hashes_for_series...';
+
+    -- Create test data
+    RAISE NOTICE 'Creating test data (table, series, and vintages)...';
+
+    -- Create test table
+    INSERT INTO platform.table (code, name, source_id, keep_vintage)
+    VALUES ('TEST_VINT_HASH', 'Test Vintages Hash Table', 1, TRUE)
+    RETURNING id INTO v_table_id;
+
+    -- Create test series
+    INSERT INTO platform.series (table_id, name_long, code)
+    VALUES (v_table_id, 'Test Series for Vintage Hashes', 'TVHS01')
+    RETURNING id INTO v_series_id;
+
+    -- Insert test vintages with specific hash patterns
+    INSERT INTO platform.vintage (series_id, published, full_hash, partial_hash)
+    VALUES (v_series_id, NOW() - INTERVAL '3 days', 'hash1_full', 'hash1_partial')
+    RETURNING id INTO v_v1_id;
+
+    INSERT INTO platform.vintage (series_id, published, full_hash, partial_hash)
+    VALUES (v_series_id, NOW() - INTERVAL '2 days', 'hash2_full', 'hash1_full')
+    RETURNING id INTO v_v2_id;
+
+    INSERT INTO platform.vintage (series_id, published, full_hash, partial_hash)
+    VALUES (v_series_id, NOW() - INTERVAL '1 day', 'hash3_full', 'hash2_full')
+    RETURNING id INTO v_v3_id;
+
+    -- Show some information about created test data
+    RAISE NOTICE 'Test data created - table_id: %, series_id: %, vintage_ids: %, %, %',
+        v_table_id, v_series_id, v_v1_id, v_v2_id, v_v3_id;
+
+    -- Test 1: Verify we get all three vintages
+    RAISE NOTICE 'Test 1: Verifying we get all three vintages...';
+
+    SELECT count(*) INTO result_count
+    FROM platform.get_vintages_with_hashes_for_series(v_series_id);
+
+    IF result_count = 3 THEN
+        RAISE NOTICE 'Test 1 PASSED: Got % vintages as expected', result_count;
+    ELSE
+        RAISE EXCEPTION 'Test 1 FAILED: Expected 3 vintages, got %', result_count;
+    END IF;
+
+    -- Test 2: Verify ordering (most recent first)
+    RAISE NOTICE 'Test 2: Verifying ordering (most recent first)...';
+
+    SELECT id, full_hash, partial_hash INTO first_id, first_full_hash, first_partial_hash
+    FROM platform.get_vintages_with_hashes_for_series(v_series_id)
+    LIMIT 1;
+
+    IF first_id = v_v3_id THEN
+        RAISE NOTICE 'Test 2a PASSED: Most recent vintage (ID %) is first as expected', first_id;
+    ELSE
+        RAISE EXCEPTION 'Test 2a FAILED: Expected ID %, got %', v_v3_id, first_id;
+    END IF;
+
+    IF first_full_hash = 'hash3_full' THEN
+        RAISE NOTICE 'Test 2b PASSED: Full hash is correct (hash3_full)';
+    ELSE
+        RAISE EXCEPTION 'Test 2b FAILED: Expected full_hash to be hash3_full, got %', first_full_hash;
+    END IF;
+
+    IF first_partial_hash = 'hash2_full' THEN
+        RAISE NOTICE 'Test 2c PASSED: Partial hash is correct (hash2_full)';
+    ELSE
+        RAISE EXCEPTION 'Test 2c FAILED: Expected partial_hash to be hash2_full, got %', first_partial_hash;
+    END IF;
+
+    -- Test 3: Verify all hashes are returned correctly
+    RAISE NOTICE 'Test 3: Verifying all hashes are returned correctly...';
+
+    SELECT
+        COUNT(*) FILTER (WHERE full_hash IS NOT NULL),
+        COUNT(*) FILTER (WHERE partial_hash IS NOT NULL)
+    INTO
+        full_hash_count,
+        partial_hash_count
+    FROM platform.get_vintages_with_hashes_for_series(v_series_id);
+
+    IF full_hash_count = 3 THEN
+        RAISE NOTICE 'Test 3a PASSED: All % vintages have full hashes', full_hash_count;
+    ELSE
+        RAISE EXCEPTION 'Test 3a FAILED: Expected 3 full hashes, got %', full_hash_count;
+    END IF;
+
+    IF partial_hash_count = 3 THEN
+        RAISE NOTICE 'Test 3b PASSED: All % vintages have partial hashes', partial_hash_count;
+    ELSE
+        RAISE EXCEPTION 'Test 3b FAILED: Expected 3 partial hashes, got %', partial_hash_count;
+    END IF;
+
+    -- Cleanup
+    RAISE NOTICE 'Cleaning up test data...';
+    DELETE FROM platform.vintage WHERE id IN (v_v1_id, v_v2_id, v_v3_id);
+    DELETE FROM platform.series WHERE id = v_series_id;
+    DELETE FROM platform.table WHERE id = v_table_id;
+
+    RAISE NOTICE 'All tests completed successfully!';
+END $$;
+
+ROLLBACK;

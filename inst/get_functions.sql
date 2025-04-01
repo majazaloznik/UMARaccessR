@@ -654,3 +654,34 @@ BEGIN
     AND c.source_id = p_source_id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- Function: get_vintages_with_hashes_for_series
+-- Description: Retrieves vintages with hashes for a given series id
+-- ============================================================================
+CREATE OR REPLACE FUNCTION test_platform.get_vintages_with_hashes_for_series(
+    p_series_id INTEGER
+)
+RETURNS TABLE (
+    id INTEGER,
+    series_id INTEGER,
+    published TIMESTAMP,
+    full_hash VARCHAR,
+    partial_hash VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        v.id,
+        v.series_id,
+        v.published,
+        v.full_hash,
+        v.partial_hash
+    FROM
+        test_platform.vintage v
+    WHERE
+        v.series_id = p_series_id
+    ORDER BY
+        v.published DESC;
+END;
+$$ LANGUAGE plpgsql;
