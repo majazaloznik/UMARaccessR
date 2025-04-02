@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_stuff.R
 \name{sql_get_vintages_with_hashes_from_series_id}
 \alias{sql_get_vintages_with_hashes_from_series_id}
-\title{Get category ID from category name}
+\title{Get vintage table with hashes from series id}
 \usage{
 sql_get_vintages_with_hashes_from_series_id(
   series_id,
@@ -21,5 +21,5 @@ sql_get_vintages_with_hashes_from_series_id(
 Data frame with hashes
 }
 \description{
-Get category ID from category name
+Get vintage table with hashes from series id
 }

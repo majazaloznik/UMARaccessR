@@ -685,3 +685,73 @@ BEGIN
         v.published DESC;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- ============================================================================
+-- Function: get_table_info
+-- Description: Retrieves table information for a given table ID
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_table_info(
+    p_table_id INTEGER
+)
+RETURNS TABLE (
+    id BIGINT,
+    code VARCHAR,
+    name VARCHAR,
+    source_id INTEGER,
+    url VARCHAR,
+    description VARCHAR,
+    notes JSON,
+    update BOOLEAN,
+    keep_vintage BOOLEAN
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        t.id,
+        t.code,
+        t.name,
+        t.source_id,
+        t.url,
+        t.description,
+        t.notes,
+        t.update,
+        t.keep_vintage
+    FROM
+        platform.table t
+    WHERE
+        t.id = p_table_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- ============================================================================
+-- Function: get_tables_with_keep_vintage
+-- Description: Retrieves tables with specified keep_vintage value
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_tables_with_keep_vintage(
+    p_keep_vintage BOOLEAN
+)
+RETURNS TABLE (
+    id INTEGER,
+    code VARCHAR,
+    name VARCHAR,
+    source_id INTEGER,
+    keep_vintage BOOLEAN
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        t.id,
+        t.code,
+        t.name,
+        t.source_id,
+        t.keep_vintage
+    FROM
+        platform.table t
+    WHERE
+        t.keep_vintage = p_keep_vintage
+    ORDER BY
+        t.id;
+END;
+$$ LANGUAGE plpgsql;

@@ -1205,7 +1205,7 @@ sql_get_category_id_from_name <- function(category_name, con, source_id = 1, sch
   return(result$id[1])
 }
 
-#' Get category ID from category name
+#' Get vintage table with hashes from series id
 #'
 #' @param con Database connection object
 #' @param series_id series id
@@ -1224,3 +1224,24 @@ sql_get_vintages_with_hashes_from_series_id <- function(series_id, con,  schema 
   if (nrow(result) == 0) return(NULL)
   return(result)
 }
+
+#' Get table information by table id
+#'
+#' @param table_id Integer specifying the table id
+#' @param con Database connection object
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame with table information or NULL if no table found
+#' @export
+sql_get_table_info <- function(table_id, con, schema = "platform") {
+  result <- UMARimportR::sql_function_call(
+    con,
+    "get_table_info",
+    list(
+      p_table_id = table_id),
+    schema)
+
+  if (nrow(result) == 0) return(NULL)
+  return(result)
+}
+

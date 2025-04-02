@@ -2026,3 +2026,155 @@ BEGIN
 END $$;
 
 ROLLBACK;
+
+
+-- ============================================================================
+-- Test for get_table_info function
+-- ============================================================================
+BEGIN;
+
+DO $$
+DECLARE
+    v_table_id INTEGER;
+    v_result RECORD;
+    v_test_code VARCHAR := 'TEST_GTI_' || floor(random() * 10000)::TEXT;
+BEGIN
+    RAISE NOTICE 'Starting tests for get_table_info...';
+
+    -- Create test table
+    RAISE NOTICE 'Creating test table...';
+    INSERT INTO platform.table (code, name, source_id, url, description, notes, update, keep_vintage)
+    VALUES (
+        v_test_code,
+        'Test Get Table Info',
+        1,
+        'http://example.com/test',
+        'Test description',
+        '{"note": "test note"}'::json,
+        true,
+        false
+    )
+    RETURNING id INTO v_table_id;
+
+    RAISE NOTICE 'Created test table with ID: %', v_table_id;
+
+    -- Test retrieving the table info
+    SELECT * FROM platform.get_table_info(v_table_id) INTO v_result;
+
+    -- Verify results
+    ASSERT v_result.id = v_table_id,
+        format('Expected ID %s, got %s', v_table_id, v_result.id);
+
+    ASSERT v_result.code = v_test_code,
+        format('Expected code %s, got %s', v_test_code, v_result.code);
+
+    ASSERT v_result.name = 'Test Get Table Info',
+        format('Expected name "Test Get Table Info", got %s', v_result.name);
+
+    ASSERT v_result.source_id = 1,
+        format('Expected source_id 1, got %s', v_result.source_id);
+
+    ASSERT v_result.description = 'Test description',
+        format('Expected description "Test description", got %s', v_result.description);
+
+    ASSERT v_result.update = true,
+        format('Expected update true, got %s', v_result.update);
+
+    ASSERT v_result.keep_vintage = false,
+        format('Expected keep_vintage false, got %s', v_result.keep_vintage);
+
+    RAISE NOTICE 'Basic retrieval test passed';
+
+    -- Test with non-existent table ID
+    PERFORM * FROM platform.get_table_info(999999);
+    -- Should return empty result set but not error
+    RAISE NOTICE 'Non-existent ID test passed';
+
+    RAISE NOTICE 'All tests for get_table_info passed!';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+
+ROLLBACK;
+
+
+-- ============================================================================
+-- Test for get_tables_with_keep_vintage function
+-- ============================================================================
+BEGIN;
+
+DO $$
+DECLARE
+    v_table_id1 INTEGER;
+    v_table_id2 INTEGER;
+    v_table_id3 INTEGER;
+    v_count_true INTEGER;
+    v_count_false INTEGER;
+    v_test_code1 VARCHAR := 'TEST_KV_TRUE_' || floor(random() * 10000)::TEXT;
+    v_test_code2 VARCHAR := 'TEST_KV_FALSE_' || floor(random() * 10000)::TEXT;
+    v_test_code3 VARCHAR := 'TEST_KV_TRUE_2_' || floor(random() * 10000)::TEXT;
+BEGIN
+    RAISE NOTICE 'Starting tests for get_tables_with_keep_vintage...';
+
+    -- Create test tables with different keep_vintage values
+    RAISE NOTICE 'Creating test tables...';
+
+    -- Table with keep_vintage = TRUE
+    INSERT INTO platform.table (code, name, source_id, keep_vintage)
+    VALUES (v_test_code1, 'Test Keep Vintage True', 1, TRUE)
+    RETURNING id INTO v_table_id1;
+
+    -- Table with keep_vintage = FALSE
+    INSERT INTO platform.table (code, name, source_id, keep_vintage)
+    VALUES (v_test_code2, 'Test Keep Vintage False', 1, FALSE)
+    RETURNING id INTO v_table_id2;
+
+    -- Another table with keep_vintage = TRUE
+    INSERT INTO platform.table (code, name, source_id, keep_vintage)
+    VALUES (v_test_code3, 'Test Keep Vintage True 2', 1, TRUE)
+    RETURNING id INTO v_table_id3;
+
+    RAISE NOTICE 'Created test tables with IDs: %, %, %', v_table_id1, v_table_id2, v_table_id3;
+
+    -- Test retrieving tables with keep_vintage = TRUE
+    SELECT COUNT(*) INTO v_count_true
+    FROM platform.get_tables_with_keep_vintage(TRUE)
+    WHERE id IN (v_table_id1, v_table_id2, v_table_id3);
+
+    ASSERT v_count_true = 2,
+        format('Expected 2 tables with keep_vintage = TRUE, got %s', v_count_true);
+
+    -- Test retrieving tables with keep_vintage = FALSE
+    SELECT COUNT(*) INTO v_count_false
+    FROM platform.get_tables_with_keep_vintage(FALSE)
+    WHERE id IN (v_table_id1, v_table_id2, v_table_id3);
+
+    ASSERT v_count_false = 1,
+        format('Expected 1 table with keep_vintage = FALSE, got %s', v_count_false);
+
+    -- Verify correct tables are returned
+    ASSERT EXISTS (
+        SELECT 1 FROM platform.get_tables_with_keep_vintage(TRUE)
+        WHERE id = v_table_id1
+    ), 'Table 1 should have keep_vintage = TRUE';
+
+    ASSERT EXISTS (
+        SELECT 1 FROM platform.get_tables_with_keep_vintage(TRUE)
+        WHERE id = v_table_id3
+    ), 'Table 3 should have keep_vintage = TRUE';
+
+    ASSERT EXISTS (
+        SELECT 1 FROM platform.get_tables_with_keep_vintage(FALSE)
+        WHERE id = v_table_id2
+    ), 'Table 2 should have keep_vintage = FALSE';
+
+    RAISE NOTICE 'All tests for get_tables_with_keep_vintage passed!';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+
+ROLLBACK;

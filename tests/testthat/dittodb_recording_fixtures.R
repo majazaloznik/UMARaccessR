@@ -629,11 +629,18 @@ source("tests/testthat/helper-connection.R")
 # sql_get_category_id_from_name("Podjetja", con, source_id = 1, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# x <- sql_get_vintages_with_hashes_from_series_id(1917, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+#
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# x <- sql_get_table_info(20, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
 
-
-start_db_capturing()
-con <- make_test_connection()
-x <- sql_get_vintages_with_hashes_from_series_id(1917, con, schema = "test_platform")
-DBI::dbDisconnect(con)
-stop_db_capturing()
 
