@@ -24,5 +24,6 @@ sql_get_vintage_from_series(
 Integer vintage ID or NULL if not found
 }
 \description{
-Get vintage ID from series ID
+get single vintage id from series id for the most recent vintage, or a specific
+time if date_valid is passed.
 }

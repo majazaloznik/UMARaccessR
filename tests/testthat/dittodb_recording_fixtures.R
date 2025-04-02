@@ -1,5 +1,4 @@
 source("tests/testthat/helper-connection.R")
-#
 # start_db_capturing()
 # con <- dbConnect(RPostgres::Postgres(),
 #                  dbname = "sandbox",
@@ -642,5 +641,11 @@ source("tests/testthat/helper-connection.R")
 # x <- sql_get_table_info(20, con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
+
+start_db_capturing()
+con <- make_test_connection()
+x <- sql_get_vintages_from_series(2043, con, schema = "test_platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()
 
 

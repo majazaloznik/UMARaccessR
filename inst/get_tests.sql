@@ -2178,3 +2178,85 @@ EXCEPTION WHEN OTHERS THEN
 END $$;
 
 ROLLBACK;
+
+
+-- ============================================================================
+-- Test for get_vintages_from_series function
+-- ============================================================================
+BEGIN;
+
+DO $$
+DECLARE
+    v_table_id BIGINT;
+    v_series_id INTEGER;
+    v_vintage_id1 BIGINT;
+    v_vintage_id2 BIGINT;
+    v_vintage_id3 BIGINT;
+    v_count INTEGER;
+    v_first_id BIGINT;
+    v_test_code VARCHAR := 'TEST_VINT_' || floor(random() * 10000)::TEXT;
+BEGIN
+    RAISE NOTICE 'Starting tests for get_vintages_from_series...';
+
+    -- Create test data
+    RAISE NOTICE 'Creating test table, series and vintages...';
+
+    -- Create test table
+    INSERT INTO platform.table (code, name, source_id)
+    VALUES (v_test_code, 'Test Vintages From Series', 1)
+    RETURNING id INTO v_table_id;
+
+    -- Create test series
+    INSERT INTO platform.series (table_id, name_long, code)
+    VALUES (v_table_id, 'Test Series For Vintages', 'TSFV01')
+    RETURNING id INTO v_series_id;
+
+    -- Create three vintages with different timestamps
+    INSERT INTO platform.vintage (series_id, published)
+    VALUES (v_series_id, NOW() - INTERVAL '3 days')
+    RETURNING id INTO v_vintage_id1;
+
+    INSERT INTO platform.vintage (series_id, published)
+    VALUES (v_series_id, NOW() - INTERVAL '2 days')
+    RETURNING id INTO v_vintage_id2;
+
+    INSERT INTO platform.vintage (series_id, published)
+    VALUES (v_series_id, NOW() - INTERVAL '1 day')
+    RETURNING id INTO v_vintage_id3;
+
+    RAISE NOTICE 'Created test data with table_id: %, series_id: %, vintage_ids: %, %, %',
+        v_table_id, v_series_id, v_vintage_id1, v_vintage_id2, v_vintage_id3;
+
+    -- Test 1: Count the number of vintages returned
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_vintages_from_series(v_series_id);
+
+    ASSERT v_count = 3,
+        format('Expected 3 vintages, got %s', v_count);
+    RAISE NOTICE 'Test 1 PASSED: Got % vintages as expected', v_count;
+
+    -- Test 2: Verify ordering (newest first)
+    SELECT id INTO v_first_id
+    FROM platform.get_vintages_from_series(v_series_id)
+    LIMIT 1;
+
+    ASSERT v_first_id = v_vintage_id3,
+        format('Expected newest vintage (ID %s) first, got %s', v_vintage_id3, v_first_id);
+    RAISE NOTICE 'Test 2 PASSED: Newest vintage is first as expected (ID %)', v_first_id;
+
+    -- Test 3: Test with non-existent series_id
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_vintages_from_series(999999);
+
+    ASSERT v_count = 0,
+        format('Expected 0 vintages for non-existent series, got %s', v_count);
+    RAISE NOTICE 'Test 3 PASSED: Non-existent series test passed';
+
+    RAISE NOTICE 'All tests for get_vintages_from_series passed!';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+
+ROLLBACK;

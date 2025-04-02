@@ -755,3 +755,30 @@ BEGIN
         t.id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- Function: get_vintages_from_series
+-- Description: Retrieves vintage information for a given series ID
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_vintages_from_series(
+    p_series_id INTEGER
+)
+RETURNS TABLE (
+    id INTEGER,
+    series_id INTEGER,
+    published TIMESTAMP
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        v.id,
+        v.series_id,
+        v.published
+    FROM
+        platform.vintage v
+    WHERE
+        v.series_id = p_series_id
+    ORDER BY
+        v.published DESC;
+END;
+$$ LANGUAGE plpgsql;

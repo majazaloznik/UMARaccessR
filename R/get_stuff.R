@@ -333,6 +333,8 @@ get_interval_from_series <- function(series, con) {
 
 #' Get vintage ID from series ID
 #'
+#' get single vintage id from series id for the most recent vintage, or a specific
+#' time if date_valid is passed.
 #' @param con Database connection object
 #' @param series_id Integer series identifier, single or vector or column
 #' @param date_valid Timestamp when the vintage was valid (optional)
@@ -1245,3 +1247,26 @@ sql_get_table_info <- function(table_id, con, schema = "platform") {
   return(result)
 }
 
+#' Get all vintages for a series
+#'
+#' @param series_id Integer specifying the series id
+#' @param con Database connection object
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame with all vintages for the series, ordered by published date (newest first)
+#' @export
+sql_get_vintages_from_series <- function(series_id, con, schema = "platform") {
+  result <- UMARimportR::sql_function_call(
+    con,
+    "get_vintages_from_series",
+    list(
+      p_series_id = series_id),
+    schema)
+
+  # Convert bigint ID to regular integer
+  if (nrow(result) > 0) {
+    result$id <- as.integer(result$id)
+  }
+
+  return(result)
+}
