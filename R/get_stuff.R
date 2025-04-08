@@ -352,7 +352,8 @@ sql_get_vintage_from_series <- function(con, series_id, date_valid = NULL, schem
                                                  "get_vintage_from_series",
                                                  list(p_series_id = id,
                                                       p_date_valid = date_valid),
-                                                 schema)
+                                                 schema) |>
+          dplyr::mutate(id = as.numeric(id))
         if (nrow(result) == 0) return(NA_real_)
         return(result$id[1])
       }
@@ -363,7 +364,8 @@ sql_get_vintage_from_series <- function(con, series_id, date_valid = NULL, schem
                                              "get_vintage_from_series",
                                              list(p_series_id = series_id,
                                                   p_date_valid = date_valid),
-                                             schema)
+                                             schema)|>
+      dplyr::mutate(id = as.numeric(id))
     if (nrow(result) == 0) return(NULL)
     return(result$id[1])
   }
@@ -409,7 +411,8 @@ sql_get_vintage_from_series_code <- function(con, series_code, date_valid = NULL
                                            "get_vintage_from_series_code",
                                            list(p_series_code = series_code,
                                                 p_date_valid = date_valid),
-                                           schema)
+                                           schema) |>
+    dplyr::mutate(id = as.numeric(id))
   if (nrow(result) == 0) return(NULL)
   return(result$id[1])
 }
@@ -702,7 +705,8 @@ sql_get_table_id_from_table_code <- function(con, table_code, schema = "platform
   result <- UMARimportR::sql_function_call(con,
                                            "get_table_id_from_table_code",
                                            list(p_table_code = table_code),
-                                           schema)
+                                           schema) |>
+    dplyr::mutate(id = as.numeric(id))
   if (nrow(result) == 0) return(NA)
   return(as.numeric(result$id[1]))
 }
@@ -1039,7 +1043,7 @@ sql_get_time_dimension_from_table_code <- function(table_code, con, schema = "pl
 #' @param table_id Integer table identifier
 #' @param schema Character string specifying the database schema
 #'
-#' @return Vector of publication timestamps or NULL if none found
+#' @return Single publication timestamps or NULL if none found
 #' @export
 sql_get_last_publication_date_from_table_id <- function(table_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
@@ -1100,7 +1104,8 @@ sql_get_levels_from_dimension_id <- function(tab_dim_id, con, schema = "platform
   result <- UMARimportR::sql_function_call(con,
                                            "get_levels_from_dimension_id",
                                            list(p_tab_dim_id = tab_dim_id),
-                                           schema)
+                                           schema) |>
+    dplyr::mutate(tab_dim_id = as.numeric(tab_dim_id))
   if (nrow(result) == 0) return(NULL)
   return(result)
 }
@@ -1221,7 +1226,9 @@ sql_get_vintages_with_hashes_from_series_id <- function(series_id, con,  schema 
     "get_vintages_with_hashes_for_series",
     list(
       p_series_id = series_id),
-    schema)
+    schema) |>
+    dplyr::mutate(id = as.numeric(id),
+                  series_id = as.numeric(series_id))
 
   if (nrow(result) == 0) return(NULL)
   return(result)
@@ -1261,7 +1268,9 @@ sql_get_vintages_from_series <- function(series_id, con, schema = "platform") {
     "get_vintages_from_series",
     list(
       p_series_id = series_id),
-    schema)
+    schema) |>
+    dplyr::mutate(id = as.numeric(id),
+                  series_id = as.numeric(series_id))
 
   # Convert bigint ID to regular integer
   if (nrow(result) > 0) {

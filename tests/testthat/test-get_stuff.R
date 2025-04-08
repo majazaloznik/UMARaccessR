@@ -200,7 +200,7 @@ test_that("new get functions work correctly", {
     expect_s3_class(result, "data.frame")
     expect_named(result, c("tab_dim_id", "level_value", "level_text"))
     expect_true(nrow(result) == 2)
-    expect_type(result$tab_dim_id, "integer")
+    expect_type(result$tab_dim_id, "double")
     expect_type(result$level_value, "character")
     expect_type(result$level_text, "character")
     result <- sql_get_dimensions_from_table_id(20L, con, schema = "test_platform")
