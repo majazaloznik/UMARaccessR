@@ -3,7 +3,7 @@
 -- Description: Retrieves all the series in the database joined together
 -- with their table names and units
 -- ============================================================================
-CREATE OR REPLACE FUNCTION test_platform.get_all_series_wtable_names()
+CREATE OR REPLACE FUNCTION platform.get_all_series_wtable_names()
  RETURNS TABLE(table_code character varying, table_name character varying, series_code character varying, series_name character varying, unit character varying, interval_id character varying)
  LANGUAGE plpgsql
 AS $function$
@@ -16,9 +16,9 @@ BEGIN
         s.name_long AS series_name,
         u.name AS unit,
         s.interval_id
-    FROM test_platform.series s
-    LEFT JOIN test_platform."table" t ON s.table_id = t.id
-    LEFT JOIN test_platform.unit u ON s.unit_id = u.id
+    FROM platform.series s
+    LEFT JOIN platform."table" t ON s.table_id = t.id
+    LEFT JOIN platform.unit u ON s.unit_id = u.id
     ORDER BY t.code, s.code;
 END;
 $function$
@@ -309,9 +309,9 @@ $$ LANGUAGE plpgsql;
 -- Function: get_levels_from_dimension_id
 -- Description: Retrieves all dimension levels for given dimension ID
 -- ============================================================================
-CREATE OR REPLACE FUNCTION platform.get_levels_from_dimension_id(p_tab_dim_id integer)
+CREATE OR REPLACE FUNCTION platform.get_levels_from_dimension_id(p_tab_dim_id bigint)
 RETURNS TABLE (
-    tab_dim_id integer,
+    tab_dim_id bigint,
     level_value character varying,
     level_text character varying
 ) AS $$
@@ -563,6 +563,29 @@ BEGIN
    JOIN platform.series s ON v.series_id = s.id
    JOIN platform."table" t ON s.table_id = t.id
    WHERE v.id = p_vintage_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- Function: get_tables_from_source
+-- Description: Retrieves tables for given source and update status
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_tables_from_source(
+    p_source_id INTEGER = NULL,
+    p_update BOOLEAN = NULL)
+RETURNS TABLE (id BIGINT,
+               code VARCHAR) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT t.id,
+        t.code
+    FROM
+        platform.table t
+    WHERE
+        (p_source_id IS NULL OR t.source_id = p_source_id)
+        AND (p_update IS NULL OR t.update = p_update)
+    ORDER BY
+        t.id;
 END;
 $$ LANGUAGE plpgsql;
 

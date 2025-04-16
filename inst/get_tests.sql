@@ -1594,7 +1594,87 @@ EXCEPTION WHEN OTHERS THEN
 END $$;
 ROLLBACK;
 
+-- ============================================================================
+-- Tests for get_tables_from_source
+-- ============================================================================
+BEGIN;
 
+DO $$
+DECLARE
+    v_table_id1 BIGINT;
+    v_table_id2 BIGINT;
+    v_table_id3 BIGINT;
+    v_count INTEGER;
+    v_test_code1 VARCHAR := 'TEST_SRC_T_' || floor(random() * 10000)::TEXT;
+    v_test_code2 VARCHAR := 'TEST_SRC_F_' || floor(random() * 10000)::TEXT;
+    v_test_code3 VARCHAR := 'TEST_SRC_T2_' || floor(random() * 10000)::TEXT;
+BEGIN
+    RAISE NOTICE 'Starting tests for get_tables_from_source...';
+
+    -- Create test tables with different source_id and update values
+    RAISE NOTICE 'Creating test tables...';
+
+    -- Table with source_id = 1, update = TRUE
+    INSERT INTO platform.table (code, name, source_id, update)
+    VALUES (v_test_code1, 'Test Source 1 Update True', 1, TRUE)
+    RETURNING id INTO v_table_id1;
+
+    -- Table with source_id = 1, update = FALSE
+    INSERT INTO platform.table (code, name, source_id, update)
+    VALUES (v_test_code2, 'Test Source 1 Update False', 1, FALSE)
+    RETURNING id INTO v_table_id2;
+
+    -- Table with source_id = 2, update = TRUE
+    INSERT INTO platform.table (code, name, source_id, update)
+    VALUES (v_test_code3, 'Test Source 2 Update True', 2, TRUE)
+    RETURNING id INTO v_table_id3;
+
+    RAISE NOTICE 'Created test tables with IDs: %, %, %', v_table_id1, v_table_id2, v_table_id3;
+
+    -- Test 1: Retrieving tables with source_id = 1, update = TRUE
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_tables_from_source(1, TRUE)
+    WHERE id IN (v_table_id1, v_table_id2, v_table_id3);
+
+    ASSERT v_count = 1,
+        format('Expected 1 table with source_id = 1 and update = TRUE, got %s', v_count);
+    RAISE NOTICE 'Test 1 PASSED: Got % table with source_id = 1 and update = TRUE', v_count;
+
+    -- Test 2: Retrieving tables with source_id = 1, update = NULL (any update value)
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_tables_from_source(1, NULL)
+    WHERE id IN (v_table_id1, v_table_id2, v_table_id3);
+
+    ASSERT v_count = 2,
+        format('Expected 2 tables with source_id = 1 and any update value, got %s', v_count);
+    RAISE NOTICE 'Test 2 PASSED: Got % tables with source_id = 1 and any update value', v_count;
+
+    -- Test 3: Retrieving tables with source_id = NULL (any source), update = TRUE
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_tables_from_source(NULL, TRUE)
+    WHERE id IN (v_table_id1, v_table_id2, v_table_id3);
+
+    ASSERT v_count = 2,
+        format('Expected 2 tables with any source_id and update = TRUE, got %s', v_count);
+    RAISE NOTICE 'Test 3 PASSED: Got % tables with any source_id and update = TRUE', v_count;
+
+    -- Test 4: Retrieving all tables (NULL source_id, NULL update)
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_tables_from_source(NULL, NULL)
+    WHERE id IN (v_table_id1, v_table_id2, v_table_id3);
+
+    ASSERT v_count = 3,
+        format('Expected 3 tables with any source_id and any update value, got %s', v_count);
+    RAISE NOTICE 'Test 4 PASSED: Got % tables with any source_id and any update value', v_count;
+
+    RAISE NOTICE 'All tests for updated get_tables_from_source passed!';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+
+ROLLBACK;
 
 -- ============================================================================
 -- Tests for get_tables_with_keep_vintage
