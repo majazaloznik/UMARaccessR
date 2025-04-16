@@ -262,6 +262,13 @@ test_that("new get functions work correctly", {
     expect_s3_class(x, "data.frame")
     expect_named(x, c("id", "series_id", "published"))
     expect_equal(nrow(x), 3)
+    x <- sql_get_tables_from_source(con, schema = "test_platform", 1, TRUE)
+    expect_equal(nrow(x), 37)
+    expect_s3_class(x, "data.frame")
+    expect_named(x, c("id", "code"))
+    x <- sql_get_tables_from_source(con, schema = "test_platform")
+    expect_equal(nrow(x), 55)
+
   })
 dbDisconnect(con)
 })

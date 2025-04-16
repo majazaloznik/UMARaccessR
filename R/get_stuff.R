@@ -342,7 +342,7 @@ get_interval_from_series <- function(series, con) {
 #'
 #' @return Integer vintage ID or NULL if not found
 #' @export
-sql_get_vintage_from_series <- function(con, series_id, date_valid = NULL, schema = "test_platform") {
+sql_get_vintage_from_series <- function(con, series_id, date_valid = NULL, schema = "platform") {
   if (length(series_id) > 1) {
     return(purrr::map_dbl(
       series_id,
@@ -791,7 +791,7 @@ get_tab_dim_id_from_table_id_and_dimension <- function(id, dimension, con){
 #'
 #' @return Integer unit ID or NA if not found
 #' @export
-sql_get_unit_id_from_unit_name <- function(unit_name, con, schema = "test_platform") {
+sql_get_unit_id_from_unit_name <- function(unit_name, con, schema = "platform") {
   if (is.na(unit_name)) return(NA_integer_)  # Handle NA input
 
   result <- UMARimportR::sql_function_call(con,
@@ -1161,7 +1161,7 @@ sql_get_series_from_table_id <- function(table_id, con, schema = "platform") {
 #' @return Integer position or NA if dimension not found
 #' @export
 sql_get_dimension_position_from_table <- function(table_id, dimension_name, con,
-                                                  schema = "test_platform") {
+                                                  schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
                                            "get_dimension_position_from_table",
                                            list(p_table_id = table_id,
@@ -1271,6 +1271,32 @@ sql_get_vintages_from_series <- function(series_id, con, schema = "platform") {
     schema) |>
     dplyr::mutate(id = as.numeric(id),
                   series_id = as.numeric(series_id))
+
+  # Convert bigint ID to regular integer
+  if (nrow(result) > 0) {
+    result$id <- as.integer(result$id)
+  }
+
+  return(result)
+}
+
+#' Get tables filtered by source_id and update status
+#'
+#' @param source_id Optional integer specifying the source ID. If NULL, returns tables from all sources.
+#' @param update Optional boolean specifying the update status. If NULL, returns tables with any update status.
+#' @param con Database connection object
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame with table IDs and codes
+#' @export
+sql_get_tables_from_source <- function(con, schema = "platform", source_id = NULL, update = NULL) {
+  result <- UMARimportR::sql_function_call(
+    con,
+    "get_tables_from_source",
+    list(
+      p_source_id = source_id,
+      p_update = update),
+    schema)
 
   # Convert bigint ID to regular integer
   if (nrow(result) > 0) {

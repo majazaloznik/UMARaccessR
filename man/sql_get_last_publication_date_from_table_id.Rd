@@ -14,7 +14,7 @@ sql_get_last_publication_date_from_table_id(table_id, con, schema = "platform")
 \item{schema}{Character string specifying the database schema}
 }
 \value{
-Vector of publication timestamps or NULL if none found
+Single publication timestamps or NULL if none found
 }
 \description{
 Get publication dates for table ID

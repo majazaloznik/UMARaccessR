@@ -8,7 +8,7 @@ sql_get_dimension_position_from_table(
   table_id,
   dimension_name,
   con,
-  schema = "test_platform"
+  schema = "platform"
 )
 }
 \arguments{

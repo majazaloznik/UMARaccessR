@@ -4,7 +4,7 @@
 \alias{sql_get_unit_id_from_unit_name}
 \title{Get unit ID from unit name}
 \usage{
-sql_get_unit_id_from_unit_name(unit_name, con, schema = "test_platform")
+sql_get_unit_id_from_unit_name(unit_name, con, schema = "platform")
 }
 \arguments{
 \item{unit_name}{Character string with unit name}
