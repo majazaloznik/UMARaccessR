@@ -2212,3 +2212,123 @@ BEGIN
     RAISE NOTICE 'All tests completed successfully!';
 END $$;
 ROLLBACK;
+
+
+-- ============================================================================
+-- Tests for get_latest_vintage_lookup_with_data
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+    v_table_id BIGINT;
+    v_series_id_1 BIGINT;
+    v_series_id_2 BIGINT;
+    v_vintage_id_1 BIGINT;
+    v_vintage_id_2 BIGINT;
+    v_vintage_id_3 BIGINT;
+    v_result_count INTEGER;
+    v_data_count INTEGER;
+    v_test_value NUMERIC;
+    v_test_code VARCHAR := 'TEST_LVLWD_' || floor(random() * 10000)::TEXT;
+BEGIN
+    RAISE NOTICE 'Starting get_latest_vintage_lookup_with_data tests...';
+
+    -- Setup test data
+    RAISE NOTICE 'Creating test table...';
+    INSERT INTO platform."table" (code, name, source_id)
+    VALUES (v_test_code, 'Test Latest Vintage Lookup', 1)
+    RETURNING id INTO v_table_id;
+
+    RAISE NOTICE 'Creating test series...';
+    INSERT INTO platform.series (table_id, name_long, code, interval_id) VALUES
+        (v_table_id, 'Test Series 1', 'TEST_001_' || v_table_id, 'M') RETURNING id INTO v_series_id_1;
+    INSERT INTO platform.series (table_id, name_long, code, interval_id) VALUES
+        (v_table_id, 'Test Series 2', 'TEST_002_' || v_table_id, 'M') RETURNING id INTO v_series_id_2;
+
+    -- Insert vintages with different published dates
+    RAISE NOTICE 'Creating test vintages...';
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_series_id_1, '2024-01-01'::timestamp) RETURNING id INTO v_vintage_id_1;
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_series_id_1, '2024-02-01'::timestamp) RETURNING id INTO v_vintage_id_2;
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_series_id_2, '2024-01-15'::timestamp) RETURNING id INTO v_vintage_id_3;
+
+    -- Insert test periods (only if they don't exist)
+    INSERT INTO platform.period (id, interval_id) VALUES
+        ('2024-01', 'M'), ('2024-02', 'M') ON CONFLICT DO NOTHING;
+
+    -- Insert data points
+    RAISE NOTICE 'Creating test data points...';
+    INSERT INTO platform.data_points (vintage_id, period_id, value) VALUES
+        (v_vintage_id_1, '2024-01', 100.5),
+        (v_vintage_id_2, '2024-01', 101.0),  -- Updated value in newer vintage
+        (v_vintage_id_2, '2024-02', 102.0),  -- New data point in newer vintage
+        (v_vintage_id_3, '2024-01', 200.0);
+
+    -- Test 1: Function returns data from latest vintages only
+    RAISE NOTICE 'Test 1: Checking data from latest vintages only...';
+    SELECT COUNT(*) INTO v_data_count
+    FROM platform.get_latest_vintage_lookup_with_data(v_table_id)
+    WHERE series_id = v_series_id_1;
+
+    ASSERT v_data_count = 2,
+        format('Expected 2 data points for series_1 latest vintage, got %s', v_data_count);
+    RAISE NOTICE 'Test 1 PASSED: Got % data points from latest vintage', v_data_count;
+
+    -- Test 2: Function returns updated value from latest vintage
+    RAISE NOTICE 'Test 2: Checking updated value from latest vintage...';
+    SELECT value INTO v_test_value
+    FROM platform.get_latest_vintage_lookup_with_data(v_table_id)
+    WHERE series_id = v_series_id_1 AND period_id = '2024-01';
+
+    ASSERT v_test_value = 101.0,
+        format('Expected updated value 101.0, got %s', v_test_value);
+    RAISE NOTICE 'Test 2 PASSED: Latest vintage value is correct (%.1f)', v_test_value;
+
+    -- Test 3: Function handles series without data points
+    RAISE NOTICE 'Test 3: Testing series without data points...';
+    INSERT INTO platform.series (table_id, name_long, code, interval_id) VALUES
+        (v_table_id, 'Test Series 3', 'TEST_003_' || v_table_id, 'M') RETURNING id INTO v_series_id_1;
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_series_id_1, '2024-01-01'::timestamp) RETURNING id INTO v_vintage_id_1;
+
+    SELECT COUNT(*) INTO v_result_count
+    FROM platform.get_latest_vintage_lookup_with_data(v_table_id)
+    WHERE series_id = v_series_id_1;
+
+    ASSERT v_result_count = 1,
+        format('Expected 1 row for series without data, got %s', v_result_count);
+    RAISE NOTICE 'Test 3 PASSED: Series without data handled correctly';
+
+    -- Test 4: Verify ordering by series_id, period_id
+    RAISE NOTICE 'Test 4: Verifying result ordering...';
+    ASSERT EXISTS (
+        SELECT 1
+        FROM (
+            SELECT series_id, period_id,
+                   LAG(series_id) OVER (ORDER BY series_id, period_id) as prev_series,
+                   LAG(period_id) OVER (ORDER BY series_id, period_id) as prev_period
+            FROM platform.get_latest_vintage_lookup_with_data(v_table_id)
+            WHERE period_id IS NOT NULL
+        ) t
+        WHERE prev_series IS NULL OR series_id >= prev_series
+    ), 'Results should be ordered by series_id, period_id';
+    RAISE NOTICE 'Test 4 PASSED: Results are properly ordered';
+
+    -- Test 5: Non-existent table
+    RAISE NOTICE 'Test 5: Testing non-existent table...';
+    SELECT COUNT(*) INTO v_result_count
+    FROM platform.get_latest_vintage_lookup_with_data(-1);
+
+    ASSERT v_result_count = 0,
+        'Should return empty for non-existent table';
+    RAISE NOTICE 'Test 5 PASSED: Non-existent table handled correctly';
+
+    RAISE NOTICE 'All tests passed successfully for get_latest_vintage_lookup_with_data';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+ROLLBACK;

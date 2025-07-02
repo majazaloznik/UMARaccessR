@@ -882,7 +882,7 @@ sql_get_series_id_from_series_code <- function(series_code, con, schema = "platf
                                            schema) |>
     dplyr::mutate(id = as.numeric(id))
   if (nrow(result) == 0) return(NA)
-  return(result)
+  return(result$id)
 }
 
 #' Get series id from series code
@@ -1301,6 +1301,32 @@ sql_get_tables_from_source <- function(con, schema = "platform", source_id = NUL
   # Convert bigint ID to regular integer
   if (nrow(result) > 0) {
     result$id <- as.integer(result$id)
+  }
+
+  return(result)
+}
+
+
+#' Get latest datapoints for table with vintages and all
+#'
+#' @param table_id what it says on the tin
+#' @param con Database connection object
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame with table IDs and codes
+#' @export
+sql_get_data_points_full_from_table_id <- function(table_id, con, schema = "platform") {
+  result <- UMARimportR::sql_function_call(
+    con,
+    "get_latest_vintage_lookup_with_data",
+    list(
+      p_table_id = table_id),
+    schema)
+
+  # Convert bigint ID to regular integer
+  if (nrow(result) > 0) {
+    result$series_id <- as.integer(result$series_id)
+    result$vintage_id <- as.integer(result$vintage_id)
   }
 
   return(result)

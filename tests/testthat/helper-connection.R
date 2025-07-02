@@ -10,3 +10,13 @@ make_test_connection <- function() {
                  password = Sys.getenv("PG_local_15_PG_PSW"))
 
 }
+# make_test_connection <- function() {
+#   con <- DBI::dbConnect(RPostgres::Postgres(),
+#                         dbname = "production_backup",
+#                         host = "192.168.38.21",
+#                         port = 5432,
+#                         user = "postgres",
+#                         password = Sys.getenv("PG_PG_PSW"),
+#                         client_encoding = "utf8")
+#
+# }

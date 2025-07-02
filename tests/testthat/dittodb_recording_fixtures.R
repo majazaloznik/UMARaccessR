@@ -438,7 +438,13 @@ source("tests/testthat/helper-connection.R")
 #                                 schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
-#
+
+start_db_capturing()
+con <- make_test_connection()
+sql_get_data_points_from_series_id(con, 71780)
+DBI::dbDisconnect(con)
+stop_db_capturing()
+
 # start_db_capturing()
 # con <- make_test_connection()
 # sql_get_last_period_from_vintage(con, 361L, schema = "test_platform")
@@ -641,11 +647,24 @@ source("tests/testthat/helper-connection.R")
 # x <- sql_get_table_info(20, con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# x <- sql_get_vintages_from_series(2043, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
 
 start_db_capturing()
 con <- make_test_connection()
-x <- sql_get_vintages_from_series(2043, con, schema = "test_platform")
+x <- sql_get_tables_from_source(con, schema = "test_platform", 1, TRUE)
+x <- sql_get_tables_from_source(con, schema = "test_platform")
 DBI::dbDisconnect(con)
 stop_db_capturing()
 
+
+start_db_capturing()
+con <- make_test_connection()
+x <- sql_get_data_points_full_from_table_id(132, con, schema = "test_platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()
 

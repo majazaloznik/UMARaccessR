@@ -771,3 +771,43 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- ============================================================================
+-- Function: get_latest_vintage_lookup_with_data
+-- Description: Retrieves data_points for most recent vintages of all series in
+--  a table with their series IDs, codes, vintage IDs, publication dates
+-- ============================================================================
+
+CREATE OR REPLACE FUNCTION platform.get_latest_vintage_lookup_with_data(p_table_id BIGINT)
+RETURNS TABLE(
+    series_id BIGINT,
+    code CHARACTER VARYING,
+    vintage_id BIGINT,
+    published TIMESTAMP,
+    period_id CHARACTER VARYING,
+    value NUMERIC
+)
+LANGUAGE SQL STABLE
+AS $$
+    WITH latest_vintages AS (
+        SELECT DISTINCT ON (s.id)
+            s.id as series_id,
+            s.code,
+            v.id as vintage_id,
+            v.published
+        FROM platform.series s
+        LEFT JOIN platform.vintage v ON s.id = v.series_id
+        WHERE s.table_id = p_table_id
+            AND v.published IS NOT NULL
+        ORDER BY s.id, v.published DESC
+    )
+    SELECT
+        lv.series_id,
+        lv.code,
+        lv.vintage_id,
+        lv.published,
+        dp.period_id,
+        dp.value
+    FROM latest_vintages lv
+    LEFT JOIN platform.data_points dp ON lv.vintage_id = dp.vintage_id
+    ORDER BY lv.series_id, dp.period_id;
+$$;
