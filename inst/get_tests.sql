@@ -2332,3 +2332,72 @@ EXCEPTION WHEN OTHERS THEN
     RAISE;
 END $$;
 ROLLBACK;
+
+-- ============================================================================
+-- Tests for get_table_id_from_series_id
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+    v_table_id BIGINT;
+    v_series_id BIGINT;
+    v_result BIGINT;
+    v_count INTEGER;
+    v_test_code VARCHAR := 'TEST_TIFSI_' || floor(random() * 10000)::TEXT;
+BEGIN
+    RAISE NOTICE 'Starting get_table_id_from_series_id tests...';
+
+    -- Setup test data
+    RAISE NOTICE 'Creating test table...';
+    INSERT INTO platform."table" (code, name, source_id)
+    VALUES (v_test_code, 'Test Table for Series ID Lookup', 1)
+    RETURNING id INTO v_table_id;
+
+    RAISE NOTICE 'Creating test series...';
+    INSERT INTO platform.series (table_id, name_long, code, interval_id)
+    VALUES (v_table_id, 'Test Series', 'TEST_SERIES_' || v_table_id, 'M')
+    RETURNING id INTO v_series_id;
+
+    -- Test 1: Basic retrieval
+    RAISE NOTICE 'Test 1: Basic table ID retrieval...';
+    SELECT id INTO v_result
+    FROM platform.get_table_id_from_series_id(v_series_id);
+
+    ASSERT v_result = v_table_id,
+        format('Expected table ID %s but got %s', v_table_id, v_result);
+    RAISE NOTICE 'Test 1 PASSED: Got correct table ID %s', v_result;
+
+    -- Test 2: Verify single result
+    RAISE NOTICE 'Test 2: Verifying single result...';
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_table_id_from_series_id(v_series_id);
+
+    ASSERT v_count = 1,
+        format('Expected 1 result but got %s', v_count);
+    RAISE NOTICE 'Test 2 PASSED: Got exactly 1 result';
+
+    -- Test 3: Non-existent series ID
+    RAISE NOTICE 'Test 3: Testing non-existent series ID...';
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_table_id_from_series_id(-1);
+
+    ASSERT v_count = 0,
+        'Should return empty for non-existent series ID';
+    RAISE NOTICE 'Test 3 PASSED: Non-existent series ID handled correctly';
+
+    -- Test 4: NULL series ID
+    RAISE NOTICE 'Test 4: Testing NULL series ID...';
+    SELECT COUNT(*) INTO v_count
+    FROM platform.get_table_id_from_series_id(NULL);
+
+    ASSERT v_count = 0,
+        'Should return empty for NULL series ID';
+    RAISE NOTICE 'Test 4 PASSED: NULL series ID handled correctly';
+
+    RAISE NOTICE 'All tests passed successfully for get_table_id_from_series_id';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+ROLLBACK;

@@ -268,6 +268,8 @@ test_that("new get functions work correctly", {
     expect_equal(nrow(x), 55)
     x <- sql_get_data_points_full_from_table_id(132, con, schema = "test_platform")
     expect_equal(dim(x), c(546, 6))
+    x <- sql_get_table_id_form_series_id(392L, con, schema = "test_platform")
+    expect_equal(x, 2)
   })
 dbDisconnect(con)
 })

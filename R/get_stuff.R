@@ -1331,3 +1331,24 @@ sql_get_data_points_full_from_table_id <- function(table_id, con, schema = "plat
 
   return(result)
 }
+
+
+
+#' Get latest datapoints for table with vintages and all
+#'
+#' @param series_id what it says on the tin
+#' @param con Database connection object
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame with table IDs and codes
+#' @export
+sql_get_table_id_form_series_id <- function(series_id, con, schema = "platform") {
+  result <- UMARimportR::sql_function_call(
+    con,
+    "get_table_id_from_series_id",
+    list(
+      p_series_id = series_id),
+    schema)
+
+  return(result[1,1])
+}

@@ -653,18 +653,23 @@ stop_db_capturing()
 # x <- sql_get_vintages_from_series(2043, con, schema = "test_platform")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# x <- sql_get_tables_from_source(con, schema = "test_platform", 1, TRUE)
+# x <- sql_get_tables_from_source(con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+#
+#
+# start_db_capturing()
+# con <- make_test_connection()
+# x <- sql_get_data_points_full_from_table_id(132, con, schema = "test_platform")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
 
 start_db_capturing()
 con <- make_test_connection()
-x <- sql_get_tables_from_source(con, schema = "test_platform", 1, TRUE)
-x <- sql_get_tables_from_source(con, schema = "test_platform")
+x <- sql_get_table_id_form_series_id(392L, con, schema = "test_platform")
 DBI::dbDisconnect(con)
 stop_db_capturing()
-
-
-start_db_capturing()
-con <- make_test_connection()
-x <- sql_get_data_points_full_from_table_id(132, con, schema = "test_platform")
-DBI::dbDisconnect(con)
-stop_db_capturing()
-

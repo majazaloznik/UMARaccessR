@@ -811,3 +811,20 @@ AS $$
     LEFT JOIN platform.data_points dp ON lv.vintage_id = dp.vintage_id
     ORDER BY lv.series_id, dp.period_id;
 $$;
+
+-- ============================================================================
+-- Function: get_table_id_from_series_id
+-- Description: Retrieves table_id for a specific series_id
+-- ============================================================================
+
+CREATE OR REPLACE FUNCTION platform.get_table_id_from_series_id(p_series_id BIGINT)
+RETURNS TABLE(
+    id INTEGER
+)
+LANGUAGE SQL STABLE
+AS $$
+    SELECT t.id
+    FROM platform.series s
+    JOIN platform."table" t ON s.table_id = t.id
+    WHERE s.id = p_series_id;
+$$;
