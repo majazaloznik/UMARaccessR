@@ -270,6 +270,8 @@ test_that("new get functions work correctly", {
     expect_equal(dim(x), c(546, 6))
     x <- sql_get_table_id_form_series_id(392L, con, schema = "test_platform")
     expect_equal(x, 2)
+    x <- sql_get_latest_vintages_for_table_id(28, con, schema = "test_platform")
+    expect_equal(dim(x), c(512, 4))
   })
 dbDisconnect(con)
 })

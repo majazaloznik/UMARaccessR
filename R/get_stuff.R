@@ -1334,13 +1334,13 @@ sql_get_data_points_full_from_table_id <- function(table_id, con, schema = "plat
 
 
 
-#' Get latest datapoints for table with vintages and all
+#' Get  table id for a series id
 #'
 #' @param series_id what it says on the tin
 #' @param con Database connection object
 #' @param schema Character string specifying the database schema
 #'
-#' @return Data frame with table IDs and codes
+#' @return integer value
 #' @export
 sql_get_table_id_form_series_id <- function(series_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(
@@ -1352,3 +1352,28 @@ sql_get_table_id_form_series_id <- function(series_id, con, schema = "platform")
 
   return(result[1,1])
 }
+
+#' Get latest datapoints for table with vintages and all
+#'
+#' @param table_id what it says on the tin
+#' @param con Database connection object
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame with table IDs and codes
+#' @export
+sql_get_latest_vintages_for_table_id <- function(table_id, con, schema = "platform") {
+  result <- UMARimportR::sql_function_call(
+    con,
+    "get_latest_vintages_for_table_id",
+    list(
+      p_table_id = table_id),
+    schema)
+  # Convert bigint ID to regular integer
+  if (nrow(result) > 0) {
+    result$series_id <- as.integer(result$series_id)
+    result$vintage_id <- as.integer(result$vintage_id)
+  }
+  return(result)
+}
+
+

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_stuff.R
 \name{sql_get_table_id_form_series_id}
 \alias{sql_get_table_id_form_series_id}
-\title{Get latest datapoints for table with vintages and all}
+\title{Get  table id for a series id}
 \usage{
 sql_get_table_id_form_series_id(series_id, con, schema = "platform")
 }
@@ -14,8 +14,8 @@ sql_get_table_id_form_series_id(series_id, con, schema = "platform")
 \item{schema}{Character string specifying the database schema}
 }
 \value{
-Data frame with table IDs and codes
+integer value
 }
 \description{
-Get latest datapoints for table with vintages and all
+Get  table id for a series id
 }

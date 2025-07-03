@@ -828,3 +828,31 @@ AS $$
     JOIN platform."table" t ON s.table_id = t.id
     WHERE s.id = p_series_id;
 $$;
+
+
+
+-- ============================================================================
+-- Function: get_table_id_from_series_id
+-- Description: Retrieves table_id for a specific series_id
+-- ============================================================================
+
+CREATE OR REPLACE FUNCTION platform.get_latest_vintages_for_table_id(p_table_id INTEGER)
+RETURNS TABLE(
+    series_id BIGINT,
+    code CHARACTER VARYING,
+    vintage_id BIGINT,
+    published TIMESTAMP
+)
+LANGUAGE SQL STABLE
+AS $$
+    SELECT DISTINCT ON (s.id)
+        s.id as series_id,
+        s.code,
+        v.id as vintage_id,
+        v.published
+    FROM platform.series s
+    LEFT JOIN platform.vintage v ON s.id = v.series_id
+    WHERE s.table_id = p_table_id
+        AND v.id IS NOT NULL
+    ORDER BY s.id, v.published DESC;
+$$;

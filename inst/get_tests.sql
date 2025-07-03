@@ -2401,3 +2401,120 @@ EXCEPTION WHEN OTHERS THEN
     RAISE;
 END $$;
 ROLLBACK;
+
+
+-- ============================================================================
+-- Tests for get_latest_vintages_for_table_id
+-- ============================================================================
+BEGIN;
+DO $$
+DECLARE
+    v_table_id INTEGER;
+    v_series_id_1 BIGINT;
+    v_series_id_2 BIGINT;
+    v_vintage_id_1 BIGINT;
+    v_vintage_id_2 BIGINT;
+    v_vintage_id_3 BIGINT;
+    v_result_count INTEGER;
+    v_latest_vintage BIGINT;
+    v_latest_published TIMESTAMP;
+    v_test_code VARCHAR := 'TEST_LVL_' || floor(random() * 10000)::TEXT;
+BEGIN
+    RAISE NOTICE 'Starting get_latest_vintages_for_table_id tests...';
+
+    -- Setup test data
+    RAISE NOTICE 'Creating test table...';
+    INSERT INTO platform."table" (code, name, source_id)
+    VALUES (v_test_code, 'Test Latest Vintage Lookup', 1)
+    RETURNING id INTO v_table_id;
+
+    RAISE NOTICE 'Creating test series...';
+    INSERT INTO platform.series (table_id, name_long, code, interval_id) VALUES
+        (v_table_id, 'Test Series 1', 'TEST_001_' || v_table_id, 'M') RETURNING id INTO v_series_id_1;
+    INSERT INTO platform.series (table_id, name_long, code, interval_id) VALUES
+        (v_table_id, 'Test Series 2', 'TEST_002_' || v_table_id, 'M') RETURNING id INTO v_series_id_2;
+
+    -- Insert vintages with different published dates
+    RAISE NOTICE 'Creating test vintages...';
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_series_id_1, '2024-01-01'::timestamp) RETURNING id INTO v_vintage_id_1;
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_series_id_1, '2024-02-01'::timestamp) RETURNING id INTO v_vintage_id_2;
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_series_id_2, '2024-01-15'::timestamp) RETURNING id INTO v_vintage_id_3;
+
+    -- Test 1: Function returns correct number of series
+    RAISE NOTICE 'Test 1: Checking correct number of series...';
+    SELECT COUNT(*) INTO v_result_count
+    FROM platform.get_latest_vintages_for_table_id(v_table_id);
+
+    ASSERT v_result_count = 2,
+        format('Expected 2 series, got %s', v_result_count);
+    RAISE NOTICE 'Test 1 PASSED: Got % series as expected', v_result_count;
+
+    -- Test 2: Function returns latest vintage for series_1
+    RAISE NOTICE 'Test 2: Checking latest vintage selection...';
+    SELECT vintage_id, published INTO v_latest_vintage, v_latest_published
+    FROM platform.get_latest_vintages_for_table_id(v_table_id)
+    WHERE series_id = v_series_id_1;
+
+    ASSERT v_latest_vintage = v_vintage_id_2,
+        format('Expected latest vintage ID %s, got %s', v_vintage_id_2, v_latest_vintage);
+    ASSERT v_latest_published = '2024-02-01'::timestamp,
+        format('Expected latest published date 2024-02-01, got %s', v_latest_published);
+    RAISE NOTICE 'Test 2 PASSED: Latest vintage correctly selected (ID %)', v_latest_vintage;
+
+    -- Test 3: Function handles series without vintages
+    RAISE NOTICE 'Test 3: Testing series without vintages...';
+    INSERT INTO platform.series (table_id, name_long, code, interval_id) VALUES
+        (v_table_id, 'Test Series 3', 'TEST_003_' || v_table_id, 'M') RETURNING id INTO v_series_id_1;
+
+    SELECT COUNT(*) INTO v_result_count
+    FROM platform.get_latest_vintages_for_table_id(v_table_id)
+    WHERE series_id = v_series_id_1;
+
+    ASSERT v_result_count = 0,
+        format('Expected 0 results for series without vintages, got %s', v_result_count);
+    RAISE NOTICE 'Test 3 PASSED: Series without vintages correctly excluded';
+
+    -- Test 4: Non-existent table
+    RAISE NOTICE 'Test 4: Testing non-existent table...';
+    SELECT COUNT(*) INTO v_result_count
+    FROM platform.get_latest_vintages_for_table_id(-1);
+
+    ASSERT v_result_count = 0,
+        'Should return empty for non-existent table';
+    RAISE NOTICE 'Test 4 PASSED: Non-existent table handled correctly';
+
+    -- Test 5: Verify ordering and uniqueness
+    RAISE NOTICE 'Test 5: Verifying result uniqueness...';
+    SELECT COUNT(DISTINCT series_id) INTO v_result_count
+    FROM platform.get_latest_vintages_for_table_id(v_table_id);
+
+    SELECT COUNT(*) INTO v_latest_vintage
+    FROM platform.get_latest_vintages_for_table_id(v_table_id);
+
+    ASSERT v_result_count = v_latest_vintage,
+        'Each series should appear exactly once in results';
+    RAISE NOTICE 'Test 5 PASSED: Each series appears exactly once';
+
+    -- Test 6: Multiple vintages ordering
+    RAISE NOTICE 'Test 6: Testing vintage ordering with more complex scenario...';
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_series_id_2, '2024-02-20'::timestamp) RETURNING id INTO v_vintage_id_1;
+
+    SELECT vintage_id INTO v_latest_vintage
+    FROM platform.get_latest_vintages_for_table_id(v_table_id)
+    WHERE series_id = v_series_id_2;
+
+    ASSERT v_latest_vintage = v_vintage_id_1,
+        format('Expected newest vintage %s for series_2, got %s', v_vintage_id_1, v_latest_vintage);
+    RAISE NOTICE 'Test 6 PASSED: Vintage ordering works correctly';
+
+    RAISE NOTICE 'All tests passed successfully for get_latest_vintages_for_table_id';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+ROLLBACK;
