@@ -1377,3 +1377,22 @@ sql_get_latest_vintages_for_table_id <- function(table_id, con, schema = "platfo
 }
 
 
+#' Get latest datapoints for table with vintages and all
+#'
+#' @param con Database connection object
+#' @param cat_name Name of category
+#' @param source_id numeric source id
+#' @param schema Character string specifying the database schema
+#'
+#' @return Data frame with table IDs and codes
+#' @export
+sql_get_category_id_by_name <- function(con, cat_name, source_id, schema = "platform") {
+  query <- sprintf(
+    "SELECT id FROM %s.category WHERE name = $1 AND source_id = $2",
+    schema
+  )
+  result <- DBI::dbGetQuery(con, query, params = list(cat_name, source_id))
+  if (nrow(result) == 0) return(NULL)
+  result$id[[1]]
+}
+

@@ -277,7 +277,13 @@ dbDisconnect(con)
 })
 
 
-
-
+test_that("new get functions work correctly", {
+  with_mock_db({
+    con <- make_test_connection2()
+    x <- sql_get_category_id_by_name(con, "Animal production", 7, schema = "platform")
+    expect_equal(x, 9)
+  })
+  dbDisconnect(con)
+})
 
 

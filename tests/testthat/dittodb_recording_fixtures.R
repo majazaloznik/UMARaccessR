@@ -681,4 +681,11 @@ x <- sql_get_latest_vintages_for_table_id(28, con, schema = "test_platform")
 DBI::dbDisconnect(con)
 stop_db_capturing()
 
+start_db_capturing()
+con <- make_test_connection()
+x <- sql_get_category_id_by_name(con, "Animal production", 7, schema = "platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()
+
+
 
