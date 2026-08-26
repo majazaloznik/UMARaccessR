@@ -25,3 +25,40 @@ test_that("sql_get_eurostat_metabase_changes_from_snapshot works correctly", {
   DBI::dbDisconnect(con)
 })
 
+
+
+# ---------------------------------------------------------------------------
+# test
+# ---------------------------------------------------------------------------
+test_that("sql_get_eurostat_removed_levels_from_snapshot works correctly", {
+  with_mock_db({
+    con <- make_test_connection2()
+    result <- sql_get_eurostat_removed_levels_from_snapshot(
+      con, 14, c("demo_fager", "demo_find"), schema = "eurostat")
+
+    expect_s3_class(result, "data.frame")
+    expect_named(result, c("dataset", "dim", "removed"))
+    # time is never a reported dimension
+    expect_false(any(result$dim == "time"))
+    # every reported dataset was one we asked for
+    expect_true(all(result$dataset %in% c("demo_fager", "demo_find")))
+  })
+  DBI::dbDisconnect(con)
+})
+
+test_that("sql_get_eurostat_removed_levels_from_snapshot handles empty input", {
+  # no DB call needed; short-circuits before the query
+  result <- sql_get_eurostat_removed_levels_from_snapshot(
+    con = NULL, snapshot_id = 1L, datasets = character(0))
+  expect_s3_class(result, "data.frame")
+  expect_equal(nrow(result), 0)
+})
+
+test_that("sql_get_eurostat_removed_levels_from_snapshot rejects commas in codes", {
+  # the comma is the array delimiter; a code containing one would mis-split
+  # server-side, so it must fail loudly before the query runs
+  expect_error(
+    sql_get_eurostat_removed_levels_from_snapshot(
+      con = NULL, snapshot_id = 1L, datasets = c("demo_fager", "bad,code")),
+    "must not contain commas")
+})

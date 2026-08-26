@@ -687,13 +687,18 @@ stop_db_capturing()
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
 
-# ---------------------------------------------------------------------------
-# dittodb fixture recording (run once against the production_backup connection)
-# ---------------------------------------------------------------------------
+# start_db_capturing()
+# con <- make_test_connection2()
+# sql_get_eurostat_metabase_changes_from_snapshot(con, 16,
+#                                                 schema = "eurostat")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+
+#
 start_db_capturing()
 con <- make_test_connection2()
-sql_get_eurostat_metabase_changes_from_snapshot(con, 16,
-                                                schema = "eurostat")
+sql_get_eurostat_removed_levels_from_snapshot(
+  con, 14, c("demo_fager", "demo_find"), schema = "eurostat")
 DBI::dbDisconnect(con)
 stop_db_capturing()
 

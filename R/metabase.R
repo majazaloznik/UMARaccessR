@@ -24,3 +24,37 @@ sql_get_eurostat_metabase_changes_from_snapshot <- function(con, snapshot_id,
     schema)
 }
 
+#' Get removed levels for datasets in a Eurostat metabase snapshot
+#'
+#' Returns the specific position codes removed (not just counts) for the given
+#' datasets at the given snapshot, so alert emails can list exactly which levels
+#' disappeared. A removed level is the actionable case: it breaks queries that
+#' filter on it. The `time` dimension is excluded.
+#'
+#' Wraps the `eurostat.get_removed_levels` database function, which takes the
+#' dataset list as a native text array — no client-side quoting required.
+#'
+#' @param con Database connection object
+#' @param snapshot_id Integer (or integer64) snapshot identifier
+#' @param datasets Character vector of dataset codes to report on
+#' @param schema Character string specifying the database schema
+#'
+#' @return A data frame with columns `dataset`, `dim`, and `removed`
+#'   (comma-separated codes, alphabetical); zero rows if no datasets were
+#'   supplied or none of them had removed levels in this snapshot.
+#' @export
+sql_get_eurostat_removed_levels_from_snapshot <- function(con, snapshot_id,
+                                                          datasets,
+                                                          schema = "eurostat") {
+  if (length(datasets) == 0) {
+    return(data.frame(dataset = character(0), dim = character(0), removed = character(0)))
+  }
+  if (any(grepl(",", datasets, fixed = TRUE)))
+    stop("dataset codes must not contain commas (array delimiter)")
+
+  UMARimportR::sql_function_call(
+    con, "get_removed_levels",
+    list(p_snapshot_id = snapshot_id,
+         p_datasets = paste(datasets, collapse = ",")),
+    schema)
+}
