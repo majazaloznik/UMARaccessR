@@ -58,3 +58,31 @@ sql_get_eurostat_removed_levels_from_snapshot <- function(con, snapshot_id,
          p_datasets = paste(datasets, collapse = ",")),
     schema)
 }
+
+
+
+#' Resolve a Eurostat TOC folder code to its descendant dataset/table codes
+#'
+#' Walks the current TOC tree from the given folder code and returns every
+#' descendant leaf (dataset or table) beneath it, transitively. Folders are not
+#' returned. Used to expand a folder subscription into the set of dataset codes
+#' it should match against. A folder that does not exist, or contains no leaves,
+#' returns zero rows.
+#'
+#' Wraps the `eurostat.resolve_folder_datasets` database function.
+#'
+#' @param con Database connection object
+#' @param folder_code Character folder code (from the TOC navigation tree)
+#' @param schema Character string specifying the database schema
+#'
+#' @return A data frame with columns `code` and `type` ('dataset' or 'table');
+#'   zero rows if the folder is unknown or empty.
+#' @export
+sql_resolve_eurostat_folder_datasets <- function(con, folder_code,
+                                                 schema = "eurostat") {
+  UMARimportR::sql_function_call(
+    con,
+    "resolve_folder_datasets",
+    list(p_folder_code = folder_code),
+    schema)
+}

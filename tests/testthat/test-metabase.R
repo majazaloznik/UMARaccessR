@@ -62,3 +62,23 @@ test_that("sql_get_eurostat_removed_levels_from_snapshot rejects commas in codes
       con = NULL, snapshot_id = 1L, datasets = c("demo_fager", "bad,code")),
     "must not contain commas")
 })
+
+
+# ---------------------------------------------------------------------------
+# test
+# ---------------------------------------------------------------------------
+test_that("sql_resolve_eurostat_folder_datasets works correctly", {
+  with_mock_db({
+    con <- make_test_connection()
+    result <- sql_resolve_eurostat_folder_datasets(
+      con, "ext_go_lti", schema = "eurostat")
+
+    expect_s3_class(result, "data.frame")
+    expect_named(result, c("code", "type"))
+    # only leaves, never folders
+    expect_true(all(result$type %in% c("dataset", "table")))
+    # a folder with descendants should return at least one
+    expect_gt(nrow(result), 0)
+  })
+  DBI::dbDisconnect(con)
+})

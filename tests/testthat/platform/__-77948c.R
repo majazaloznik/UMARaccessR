@@ -1,0 +1,11 @@
+structure(list(code = c("ext_lt_intercc", "ext_lt_intertrd", 
+"ext_lt_intratrd", "ext_lt_introeu27_2020", "ext_lt_mainagri", 
+"ext_lt_mainchem", "ext_lt_maineu", "ext_lt_mainez", "ext_lt_mainmach", 
+"ext_lt_mainmanu", "ext_lt_mainmine", "ext_lt_mainrawm", "tet00001", 
+"tet00002", "tet00011", "tet00012", "tet00013", "tet00028", "tet00037", 
+"tet00038", "tet00065", "tet00066", "tipsen10"), type = c("dataset", 
+"dataset", "dataset", "dataset", "dataset", "dataset", "dataset", 
+"dataset", "dataset", "dataset", "dataset", "dataset", "table", 
+"table", "table", "table", "table", "table", "table", "table", 
+"table", "table", "table")), class = "data.frame", row.names = c(NA, 
+-23L))

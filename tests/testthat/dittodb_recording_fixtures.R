@@ -439,11 +439,11 @@ source("tests/testthat/helper-connection.R")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
 
-start_db_capturing()
-con <- make_test_connection()
-sql_get_data_points_from_series_id(con, 71780)
-DBI::dbDisconnect(con)
-stop_db_capturing()
+# start_db_capturing()
+# con <- make_test_connection()
+# sql_get_data_points_from_series_id(con, 71780)
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
 
 # start_db_capturing()
 # con <- make_test_connection()
@@ -695,11 +695,17 @@ stop_db_capturing()
 # stop_db_capturing()
 
 #
+# start_db_capturing()
+# con <- make_test_connection2()
+# sql_get_eurostat_removed_levels_from_snapshot(
+#   con, 14, c("demo_fager", "demo_find"), schema = "eurostat")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+
+
+
 start_db_capturing()
-con <- make_test_connection2()
-sql_get_eurostat_removed_levels_from_snapshot(
-  con, 14, c("demo_fager", "demo_find"), schema = "eurostat")
+con <- make_connection()
+sql_resolve_eurostat_folder_datasets(con, "ext_go_lti", schema = "eurostat")
 DBI::dbDisconnect(con)
 stop_db_capturing()
-
-
