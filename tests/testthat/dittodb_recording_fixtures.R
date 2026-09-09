@@ -703,9 +703,33 @@ source("tests/testthat/helper-connection.R")
 # stop_db_capturing()
 
 
+#
+# start_db_capturing()
+# con <- make_connection()
+# sql_resolve_eurostat_folder_datasets(con, "ext_go_lti", schema = "eurostat")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
 
-start_db_capturing()
-con <- make_connection()
-sql_resolve_eurostat_folder_datasets(con, "ext_go_lti", schema = "eurostat")
-DBI::dbDisconnect(con)
-stop_db_capturing()
+
+# start_db_capturing()
+# con <- make_test_connection2()
+# sql_get_eurostat_new_periods_from_snapshot(con, 20, schema = "eurostat")
+# DBI::dbDisconnect(con)
+# stop_db_capturing()
+
+
+
+withr::with_timezone("UTC", {
+  start_db_capturing()
+  con <- make_test_connection2()
+  # Happy path: two real codes, wide-joined
+  UMARaccessR::get_series_table(
+    codes = c("DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q"),
+    con = con)
+  # Single-code edge case (purrr::reduce over a length-1 list)
+  UMARaccessR::get_series_table(
+    codes = "DESEZ--PR--Ex--Y--Q",
+    con = con)
+  DBI::dbDisconnect(con)
+
+  stop_db_capturing()})

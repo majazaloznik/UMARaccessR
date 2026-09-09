@@ -86,3 +86,32 @@ sql_resolve_eurostat_folder_datasets <- function(con, folder_code,
     list(p_folder_code = folder_code),
     schema)
 }
+
+
+#' Get new time periods published in a Eurostat metabase snapshot
+#'
+#' Returns each dataset that gained a `time` position in the given snapshot,
+#' with the new period code(s). A new time position marks a period being opened
+#' in the table's structure -- so this fires once per table per period, at the
+#' table's native frequency, and is immune to the country-by-country data
+#' dribble that makes Eurostat's own "last updated" alerts noisy (a late country
+#' filling in an existing period adds data, not structure, so it is invisible
+#' here).
+#'
+#' Wraps the `eurostat.get_new_periods` database function.
+#'
+#' @param con Database connection object
+#' @param snapshot_id Integer (or integer64) snapshot identifier
+#' @param schema Character string specifying the database schema
+#'
+#' @return A data frame with columns `dataset` and `new_periods` (comma-
+#'   separated period codes); zero rows if the snapshot opened no new periods.
+#' @export
+sql_get_eurostat_new_periods_from_snapshot <- function(con, snapshot_id,
+                                                       schema = "eurostat") {
+  UMARimportR::sql_function_call(
+    con,
+    "get_new_periods",
+    list(p_snapshot_id = snapshot_id),
+    schema)
+}

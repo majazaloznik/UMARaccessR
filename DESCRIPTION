@@ -23,7 +23,8 @@ Imports:
     openxlsx,
     rlang (>= 1.0.3),
     UMARimportR, 
-    purrr
+    purrr, 
+    withr
 Remotes: 
     majazaloznik/UMARimportR
 Config/roxygen2/version: 8.1.0

@@ -1396,3 +1396,48 @@ sql_get_category_id_by_name <- function(con, cat_name, source_id, schema = "plat
   result$id[[1]]
 }
 
+#' Get a wide table of multiple series by code
+#'
+#' Fetches data for multiple series codes and full-joins them into a single
+#' wide dataframe on \code{period_id}, ready for
+#' \link[UMARvisualisR]{prep_chart} among other things. Column names are the
+#' the codes themselves — use \code{prep_chart(legend = ...)} to relabel for display.
+#'
+#' All codes must resolve on the same connection/schema. Series from a
+#' different source database (e.g. \code{davcne} vs \code{platform}) need a
+#' separate call and a manual join.
+#'
+#' @param codes Character vector of series codes
+#' @param con Database connection object
+#' @param date_valid (optional) timestamp when the vintage was valid;
+#'   simultaneously applied to every code
+#' @param schema Character string specifying the db schema, defaulting to "platform"
+#'
+#' @return A dataframe with \code{period_id} and one column per code,
+#'   ordered by \code{period_id}.
+#' @export
+get_series_table <- function(codes, con, date_valid = NULL, schema = "platform") {
+
+  series_ids <- purrr::map_dbl(codes, sql_get_series_id_from_series_code,
+                               con = con, schema = schema)
+  names(series_ids) <- codes
+
+  unresolved <- names(series_ids)[is.na(series_ids)]
+  if (length(unresolved) > 0) {
+    stop("Series code(s) not found: ", paste(unresolved, collapse = ", "))
+  }
+
+  series_list <- purrr::map2(series_ids, codes, \(id, code) {
+    sql_get_data_points_from_series_id(con, id, new_name = code,
+                                       date_valid = date_valid, schema = schema)
+  })
+
+  empty <- codes[purrr::map_lgl(series_list, is.null)]
+  if (length(empty) > 0) {
+    stop("Series code(s) resolved but returned no data points: ",
+         paste(empty, collapse = ", "))
+  }
+
+  purrr::reduce(series_list, dplyr::full_join, by = "period_id") |>
+    dplyr::arrange(period_id)
+}

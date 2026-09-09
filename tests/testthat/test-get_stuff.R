@@ -287,3 +287,71 @@ test_that("new get functions work correctly", {
 })
 
 
+
+test_that("get_series_table returns a wide table joined on period_id", {
+  withr::with_timezone("UTC", {
+    dittodb::with_mock_db({
+      con <- make_test_connection2()
+
+      result <- get_series_table(
+        codes = c("DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q"),
+        con = con
+      )
+
+      DBI::dbDisconnect(con)
+
+      testthat::expect_s3_class(result, "data.frame")
+      testthat::expect_named(
+        result,
+        c("period_id", "DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q")
+      )
+      testthat::expect_false(is.unsorted(result$period_id))
+    })
+  })
+})
+
+test_that("get_series_table handles a single code without erroring in reduce()", {
+  withr::with_timezone("UTC", {
+    con <- make_test_connection2()
+
+    result <- get_series_table(codes = "DESEZ--PR--Ex--Y--Q", con = con)
+
+    DBI::dbDisconnect(con)
+
+    testthat::expect_named(result, c("period_id", "DESEZ--PR--Ex--Y--Q"))
+  })
+})
+
+
+test_that("get_series_table fails loudly on an unresolvable code", {
+  testthat::local_mocked_bindings(
+    sql_get_series_id_from_series_code = function(series_code, con, schema = "platform") {
+      if (series_code == "BOGUS--CODE") return(NA_real_)
+      42
+    },
+    .package = "UMARaccessR"
+  )
+
+  testthat::expect_error(
+    get_series_table(codes = c("DESEZ--PR--Ex--Y--Q", "BOGUS--CODE"), con = NULL),
+    regexp = "BOGUS--CODE"
+  )
+})
+
+test_that("get_series_table fails loudly when a resolved code has no data points", {
+  testthat::local_mocked_bindings(
+    sql_get_series_id_from_series_code = function(series_code, con, schema = "platform") 42,
+    sql_get_data_points_from_series_id = function(con, series_id, new_name = NULL,
+                                                  date_valid = NULL, schema = "platform") {
+      if (new_name == "EMPTY--SERIES") return(NULL)
+      data.frame(period_id = c("2023M01", "2023M02"), value = c(1, 2)) |>
+        dplyr::rename(!!new_name := value)
+    },
+    .package = "UMARaccessR"
+  )
+
+  testthat::expect_error(
+    get_series_table(codes = c("DESEZ--PR--Ex--Y--Q", "EMPTY--SERIES"), con = NULL),
+    regexp = "EMPTY--SERIES"
+  )
+})

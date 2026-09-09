@@ -82,3 +82,23 @@ test_that("sql_resolve_eurostat_folder_datasets works correctly", {
   })
   DBI::dbDisconnect(con)
 })
+
+
+
+
+# ---------------------------------------------------------------------------
+# test
+# ---------------------------------------------------------------------------
+test_that("sql_get_eurostat_new_periods_from_snapshot works correctly", {
+  with_mock_db({
+    con <- make_test_connection2()
+    result <- sql_get_eurostat_new_periods_from_snapshot(
+      con, 20, schema = "eurostat")
+
+    expect_s3_class(result, "data.frame")
+    expect_named(result, c("dataset", "new_periods"))
+    # new_periods is never empty for a returned row
+    expect_true(all(nzchar(result$new_periods)))
+  })
+  DBI::dbDisconnect(con)
+})
