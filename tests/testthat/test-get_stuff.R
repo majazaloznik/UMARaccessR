@@ -312,16 +312,17 @@ test_that("get_series_table returns a wide table joined on period_id", {
 
 test_that("get_series_table handles a single code without erroring in reduce()", {
   withr::with_timezone("UTC", {
-    con <- make_test_connection2()
+    with_mock_db({
+      con <- make_test_connection2()
 
-    result <- get_series_table(codes = "DESEZ--PR--Ex--Y--Q", con = con)
+      result <- get_series_table(codes = "DESEZ--PR--Ex--Y--Q", con = con)
 
-    DBI::dbDisconnect(con)
+      DBI::dbDisconnect(con)
 
-    testthat::expect_named(result, c("period_id", "DESEZ--PR--Ex--Y--Q"))
+      testthat::expect_named(result, c("period_id", "DESEZ--PR--Ex--Y--Q"))
+    })
   })
 })
-
 
 test_that("get_series_table fails loudly on an unresolvable code", {
   testthat::local_mocked_bindings(
