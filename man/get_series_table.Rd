@@ -7,14 +7,14 @@
 get_series_table(codes, con, date_valid = NULL, schema = "platform")
 }
 \arguments{
-\item{codes}{Character vector of series codes}
+\item{codes}{Character vector of series codes, optionally named}
 
 \item{con}{Database connection object}
 
-\item{date_valid}{(optional) timestamp when the vintage was valid;
-simultaneously applied to every code}
+\item{date_valid}{Timestamp when the vintage was valid (optional); applied
+to every code}
 
-\item{schema}{Character string specifying the db schema, defaulting to "platform"}
+\item{schema}{Character string specifying the database schema}
 }
 \value{
 A dataframe with \code{period_id} and one column per code,
@@ -23,10 +23,15 @@ A dataframe with \code{period_id} and one column per code,
 \description{
 Fetches data for multiple series codes and full-joins them into a single
 wide dataframe on \code{period_id}, ready for
-\link[UMARvisualisR]{prep_chart} among other things. Column names are the
-the codes themselves — use \code{prep_chart(legend = ...)} to relabel for display.
+\link[UMARvisualisR]{prep_chart}.
 }
 \details{
+Column names default to the codes themselves. Pass a named vector to
+rename: \code{c(gdp = "SURS--...--B1GQ--...", cons = "SURS--...--P3--...")}
+gives columns \code{period_id, gdp, cons}. Unnamed elements of a partially
+named vector fall back to the code. The same code may appear more than once
+as long as the resulting column names are distinct.
+
 All codes must resolve on the same connection/schema. Series from a
 different source database (e.g. \code{davcne} vs \code{platform}) need a
 separate call and a manual join.

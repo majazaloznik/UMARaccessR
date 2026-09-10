@@ -717,19 +717,10 @@ source("tests/testthat/helper-connection.R")
 # DBI::dbDisconnect(con)
 # stop_db_capturing()
 
+# dittodb::start_db_capturing()
+# con <- make_test_connection2()
+# get_series_table(c("DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q"), con, schema = "platform")
+# get_series_table("DESEZ--PR--CB--N--Q", con, schema = "platform")
+# try(get_series_table(c("DESEZ--PR--CB--N--Q", "BOGUS--CODE"), con, schema = "platform"))
+# dittodb::stop_db_capturing()
 
-
-withr::with_timezone("UTC", {
-  start_db_capturing()
-  con <- make_test_connection2()
-  # Happy path: two real codes, wide-joined
-  UMARaccessR::get_series_table(
-    codes = c("DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q"),
-    con = con)
-  # Single-code edge case (purrr::reduce over a length-1 list)
-  UMARaccessR::get_series_table(
-    codes = "DESEZ--PR--Ex--Y--Q",
-    con = con)
-  DBI::dbDisconnect(con)
-
-  stop_db_capturing()})

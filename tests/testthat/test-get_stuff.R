@@ -286,73 +286,110 @@ test_that("new get functions work correctly", {
   dbDisconnect(con)
 })
 
-
-
 test_that("get_series_table returns a wide table joined on period_id", {
-  withr::with_timezone("UTC", {
-    dittodb::with_mock_db({
-      con <- make_test_connection2()
+  dittodb::with_mock_db({
+    con <- make_test_connection2()
+    result <- get_series_table(c("DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q"), con,
+                               schema = "platform")
 
-      result <- get_series_table(
-        codes = c("DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q"),
-        con = con
-      )
-
-      DBI::dbDisconnect(con)
-
-      testthat::expect_s3_class(result, "data.frame")
-      testthat::expect_named(
-        result,
-        c("period_id", "DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q")
-      )
-      testthat::expect_false(is.unsorted(result$period_id))
-    })
+    testthat::expect_s3_class(result, "data.frame")
+    testthat::expect_named(result, c("period_id", "DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q"))
+    testthat::expect_false(is.unsorted(result$period_id))
   })
 })
 
-test_that("get_series_table handles a single code without erroring in reduce()", {
-  withr::with_timezone("UTC", {
-    with_mock_db({
-      con <- make_test_connection2()
+test_that("get_series_table handles a single code", {
+  dittodb::with_mock_db({
+    con <- make_test_connection2()
+    result <- get_series_table("DESEZ--PR--CB--N--Q", con, schema = "platform")
 
-      result <- get_series_table(codes = "DESEZ--PR--Ex--Y--Q", con = con)
+    testthat::expect_named(result, c("period_id", "DESEZ--PR--CB--N--Q"))
+  })
+})
 
-      DBI::dbDisconnect(con)
+test_that("get_series_table renames columns to names(codes)", {
+  dittodb::with_mock_db({
+    con <- make_test_connection2()
+    result <- get_series_table(c(gdp = "DESEZ--PR--CB--N--Q", cons = "DESEZ--PR--CB--Y--Q"), con,
+                               schema = "platform")
 
-      testthat::expect_named(result, c("period_id", "DESEZ--PR--Ex--Y--Q"))
-    })
+    testthat::expect_named(result, c("period_id", "gdp", "cons"))
+  })
+})
+
+test_that("get_series_table falls back to the code for unnamed elements", {
+  dittodb::with_mock_db({
+    con <- make_test_connection2()
+    result <- get_series_table(c(gdp = "DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--Y--Q"), con,
+                               schema = "platform")
+
+    testthat::expect_named(result, c("period_id", "gdp", "DESEZ--PR--CB--Y--Q"))
+  })
+})
+
+test_that("get_series_table allows the same code twice under different names", {
+  dittodb::with_mock_db({
+    con <- make_test_connection2()
+    result <- get_series_table(c(level = "DESEZ--PR--CB--N--Q", again = "DESEZ--PR--CB--N--Q"), con,
+                               schema = "platform")
+
+    testthat::expect_named(result, c("period_id", "level", "again"))
   })
 })
 
 test_that("get_series_table fails loudly on an unresolvable code", {
-  testthat::local_mocked_bindings(
-    sql_get_series_id_from_series_code = function(series_code, con, schema = "platform") {
-      if (series_code == "BOGUS--CODE") return(NA_real_)
-      42
-    },
-    .package = "UMARaccessR"
-  )
+  dittodb::with_mock_db({
+    con <- make_test_connection2()
 
+    testthat::expect_error(
+      get_series_table(c("DESEZ--PR--CB--N--Q", "BOGUS--CODE"), con, schema = "platform"),
+      regexp = "BOGUS--CODE"
+    )
+  })
+})
+
+test_that("get_series_table errors on duplicate column names before touching the DB", {
   testthat::expect_error(
-    get_series_table(codes = c("DESEZ--PR--Ex--Y--Q", "BOGUS--CODE"), con = NULL),
-    regexp = "BOGUS--CODE"
+    get_series_table(c("DESEZ--PR--CB--N--Q", "DESEZ--PR--CB--N--Q"), con = NULL),
+    regexp = "Duplicate column names"
   )
 })
 
+# Needs a series that resolves but has no data points, which platform
+# may not have — so this one is mocked. The argument names are the bare
+# binding names inside the namespace given by .package; they cannot be
+# namespaced (UMARaccessR::x = ... is a parse error).
 test_that("get_series_table fails loudly when a resolved code has no data points", {
   testthat::local_mocked_bindings(
     sql_get_series_id_from_series_code = function(series_code, con, schema = "platform") 42,
     sql_get_data_points_from_series_id = function(con, series_id, new_name = NULL,
                                                   date_valid = NULL, schema = "platform") {
       if (new_name == "EMPTY--SERIES") return(NULL)
-      data.frame(period_id = c("2023M01", "2023M02"), value = c(1, 2)) |>
-        dplyr::rename(!!new_name := value)
+      df <- data.frame(period_id = c("2023M01", "2023M02"), value = c(1, 2))
+      names(df)[2] <- new_name
+      df
     },
     .package = "UMARaccessR"
   )
 
   testthat::expect_error(
-    get_series_table(codes = c("DESEZ--PR--Ex--Y--Q", "EMPTY--SERIES"), con = NULL),
+    get_series_table(c("DESEZ--PR--CB--N--Q", "EMPTY--SERIES"), con = NULL),
     regexp = "EMPTY--SERIES"
+  )
+})
+
+test_that("get_series_table fails loudly if the value column is not renamed as asked", {
+  testthat::local_mocked_bindings(
+    sql_get_series_id_from_series_code = function(series_code, con, schema = "platform") 42,
+    sql_get_data_points_from_series_id = function(con, series_id, new_name = NULL,
+                                                  date_valid = NULL, schema = "platform") {
+      data.frame(period_id = c("2023M01", "2023M02"), nm = c(1, 2))
+    },
+    .package = "UMARaccessR"
+  )
+
+  testthat::expect_error(
+    get_series_table(c(gdp = "CODE--A"), con = NULL),
+    regexp = "expected gdp, got period_id/nm"
   )
 })

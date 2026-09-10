@@ -1395,41 +1395,56 @@ sql_get_category_id_by_name <- function(con, cat_name, source_id, schema = "plat
   if (nrow(result) == 0) return(NULL)
   result$id[[1]]
 }
-
 #' Get a wide table of multiple series by code
 #'
 #' Fetches data for multiple series codes and full-joins them into a single
 #' wide dataframe on \code{period_id}, ready for
-#' \link[UMARvisualisR]{prep_chart} among other things. Column names are the
-#' the codes themselves — use \code{prep_chart(legend = ...)} to relabel for display.
+#' \link[UMARvisualisR]{prep_chart}.
+#'
+#' Column names default to the codes themselves. Pass a named vector to
+#' rename: \code{c(gdp = "SURS--...--B1GQ--...", cons = "SURS--...--P3--...")}
+#' gives columns \code{period_id, gdp, cons}. Unnamed elements of a partially
+#' named vector fall back to the code. The same code may appear more than once
+#' as long as the resulting column names are distinct.
 #'
 #' All codes must resolve on the same connection/schema. Series from a
 #' different source database (e.g. \code{davcne} vs \code{platform}) need a
 #' separate call and a manual join.
 #'
-#' @param codes Character vector of series codes
+#' @param codes Character vector of series codes, optionally named
 #' @param con Database connection object
-#' @param date_valid (optional) timestamp when the vintage was valid;
-#'   simultaneously applied to every code
-#' @param schema Character string specifying the db schema, defaulting to "platform"
+#' @param date_valid Timestamp when the vintage was valid (optional); applied
+#'   to every code
+#' @param schema Character string specifying the database schema
 #'
 #' @return A dataframe with \code{period_id} and one column per code,
 #'   ordered by \code{period_id}.
 #' @export
+#' @importFrom rlang .data
 get_series_table <- function(codes, con, date_valid = NULL, schema = "platform") {
 
-  series_ids <- purrr::map_dbl(codes, sql_get_series_id_from_series_code,
-                               con = con, schema = schema)
-  names(series_ids) <- codes
+  col_names <- names(codes)
+  codes <- unname(codes)
+  if (is.null(col_names)) col_names <- codes
+  col_names <- ifelse(is.na(col_names) | col_names == "", codes, col_names)
 
-  unresolved <- names(series_ids)[is.na(series_ids)]
+  if (anyDuplicated(col_names)) {
+    stop("Duplicate column names: ",
+         paste(unique(col_names[duplicated(col_names)]), collapse = ", "),
+         " (pass a named `codes` vector to disambiguate)")
+  }
+
+  series_ids <- purrr::map_dbl(codes, UMARaccessR::sql_get_series_id_from_series_code,
+                               con = con, schema = schema)
+
+  unresolved <- codes[is.na(series_ids)]
   if (length(unresolved) > 0) {
     stop("Series code(s) not found: ", paste(unresolved, collapse = ", "))
   }
 
-  series_list <- purrr::map2(series_ids, codes, \(id, code) {
-    sql_get_data_points_from_series_id(con, id, new_name = code,
-                                       date_valid = date_valid, schema = schema)
+  series_list <- purrr::map2(series_ids, col_names, \(id, nm) {
+    UMARaccessR::sql_get_data_points_from_series_id(con, id, new_name = nm,
+                                                    date_valid = date_valid, schema = schema)
   })
 
   empty <- codes[purrr::map_lgl(series_list, is.null)]
@@ -1438,6 +1453,14 @@ get_series_table <- function(codes, con, date_valid = NULL, schema = "platform")
          paste(empty, collapse = ", "))
   }
 
+  misnamed <- purrr::map2_lgl(series_list, col_names, \(df, nm) !nm %in% names(df))
+  if (any(misnamed)) {
+    stop("sql_get_data_points_from_series_id did not name the value column as requested: ",
+         "expected ", paste(col_names[misnamed], collapse = ", "),
+         ", got ", paste(purrr::map_chr(series_list[misnamed], \(df) paste(names(df), collapse = "/")),
+                         collapse = "; "))
+  }
+
   purrr::reduce(series_list, dplyr::full_join, by = "period_id") |>
-    dplyr::arrange(period_id)
+    dplyr::arrange(.data$period_id)
 }
