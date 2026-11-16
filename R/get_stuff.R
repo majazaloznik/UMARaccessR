@@ -1464,3 +1464,24 @@ get_series_table <- function(codes, con, date_valid = NULL, schema = "platform")
   purrr::reduce(series_list, dplyr::full_join, by = "period_id") |>
     dplyr::arrange(.data$period_id)
 }
+
+
+#' Get a summary of a table: code, name, source and counts
+#'
+#' @param table_id Integer specifying the table id
+#' @param con Database connection object
+#' @param schema Character string specifying the database schema
+#'
+#' @return One-row data frame (`table_id`, `code`, `name`, `source`,
+#'   `n_series`, `n_vintages`) or NULL if no table found
+#' @export
+sql_get_table_summary <- function(table_id, con, schema = "platform") {
+  result <- UMARimportR::sql_function_call(
+    con,
+    "get_table_summary",
+    list(p_table_id = table_id),
+    schema)
+
+  if (nrow(result) == 0) return(NULL)
+  return(result)
+}

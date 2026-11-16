@@ -856,3 +856,37 @@ AS $$
         AND v.id IS NOT NULL
     ORDER BY s.id, v.published DESC;
 $$;
+
+-- ============================================================================
+-- Function: get_table_summary
+-- Description: Table code, name, source name and series/vintage counts for a
+--              table ID. Empty result if the table does not exist.
+-- ============================================================================
+CREATE OR REPLACE FUNCTION platform.get_table_summary(
+    p_table_id INTEGER
+)
+RETURNS TABLE (
+    table_id INTEGER,
+    code VARCHAR,
+    name VARCHAR,
+    source VARCHAR,
+    n_series INTEGER,
+    n_vintages INTEGER
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        t.id::INTEGER,
+        t.code,
+        t.name,
+        s.name,
+        (SELECT count(*) FROM platform.series se
+          WHERE se.table_id = t.id)::INTEGER,
+        (SELECT count(*) FROM platform.vintage v
+           JOIN platform.series se ON v.series_id = se.id
+          WHERE se.table_id = t.id)::INTEGER
+    FROM platform."table" t
+    JOIN platform.source s ON s.id = t.source_id
+    WHERE t.id = p_table_id;
+END;
+$$ LANGUAGE plpgsql;

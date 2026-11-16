@@ -2518,3 +2518,104 @@ EXCEPTION WHEN OTHERS THEN
     RAISE;
 END $$;
 ROLLBACK;
+
+
+-- ============================================================================
+-- Test for get_table_summary function
+-- ============================================================================
+BEGIN;
+
+DO $$
+DECLARE
+    v_table_id INTEGER;
+    v_empty_table_id INTEGER;
+    v_other_table_id INTEGER;
+    v_series_id_1 BIGINT;
+    v_series_id_2 BIGINT;
+    v_other_series_id BIGINT;
+    v_source_name VARCHAR;
+    v_result RECORD;
+BEGIN
+    RAISE NOTICE 'Starting tests for get_table_summary...';
+
+    SELECT name INTO v_source_name FROM platform.source WHERE id = 1;
+
+    -- Main table: 2 series, 3 vintages (2 on series 1, 1 on series 2)
+    INSERT INTO platform.table (code, name, source_id)
+    VALUES ('TEST_GTS_MAIN', 'Test Summary Table', 1)
+    RETURNING id INTO v_table_id;
+
+    INSERT INTO platform.series (table_id, name_long, code)
+    VALUES (v_table_id, 'Series 1', 'TS1') RETURNING id INTO v_series_id_1;
+    INSERT INTO platform.series (table_id, name_long, code)
+    VALUES (v_table_id, 'Series 2', 'TS2') RETURNING id INTO v_series_id_2;
+
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_series_id_1, '2024-01-01 10:00:00'::timestamp),
+        (v_series_id_1, '2024-02-01 10:00:00'::timestamp),
+        (v_series_id_2, '2024-01-01 10:00:00'::timestamp);
+
+    -- Other table: must not leak into the main table's counts
+    INSERT INTO platform.table (code, name, source_id)
+    VALUES ('TEST_GTS_OTHER', 'Other Table', 1)
+    RETURNING id INTO v_other_table_id;
+    INSERT INTO platform.series (table_id, name_long, code)
+    VALUES (v_other_table_id, 'Other Series', 'OS1') RETURNING id INTO v_other_series_id;
+    INSERT INTO platform.vintage (series_id, published) VALUES
+        (v_other_series_id, '2024-01-01 10:00:00'::timestamp),
+        (v_other_series_id, '2024-02-01 10:00:00'::timestamp);
+
+    -- Empty table: no series at all
+    INSERT INTO platform.table (code, name, source_id)
+    VALUES ('TEST_GTS_EMPTY', 'Empty Table', 1)
+    RETURNING id INTO v_empty_table_id;
+
+    -- Test 1: basic retrieval
+    SELECT * INTO v_result FROM platform.get_table_summary(v_table_id);
+
+    ASSERT v_result.table_id = v_table_id,
+        format('Expected table_id %s, got %s', v_table_id, v_result.table_id);
+    ASSERT v_result.code = 'TEST_GTS_MAIN',
+        format('Expected code TEST_GTS_MAIN, got %s', v_result.code);
+    ASSERT v_result.name = 'Test Summary Table',
+        format('Expected name "Test Summary Table", got %s', v_result.name);
+    ASSERT v_result.source = v_source_name,
+        format('Expected source %s, got %s', v_source_name, v_result.source);
+    ASSERT v_result.n_series = 2,
+        format('Expected 2 series, got %s', v_result.n_series);
+    ASSERT v_result.n_vintages = 3,
+        format('Expected 3 vintages, got %s', v_result.n_vintages);
+    RAISE NOTICE 'Test 1 PASSED: basic retrieval and counts';
+
+    -- Test 2: counts are per table (the other table has 1 series, 2 vintages)
+    SELECT * INTO v_result FROM platform.get_table_summary(v_other_table_id);
+
+    ASSERT v_result.n_series = 1,
+        format('Other table: expected 1 series, got %s', v_result.n_series);
+    ASSERT v_result.n_vintages = 2,
+        format('Other table: expected 2 vintages, got %s', v_result.n_vintages);
+    RAISE NOTICE 'Test 2 PASSED: counts do not leak between tables';
+
+    -- Test 3: table without series returns zero counts, not NULL
+    SELECT * INTO v_result FROM platform.get_table_summary(v_empty_table_id);
+
+    ASSERT v_result.table_id = v_empty_table_id,
+        'Table without series should still be returned';
+    ASSERT v_result.n_series = 0,
+        format('Empty table: expected 0 series, got %s', v_result.n_series);
+    ASSERT v_result.n_vintages = 0,
+        format('Empty table: expected 0 vintages, got %s', v_result.n_vintages);
+    RAISE NOTICE 'Test 3 PASSED: empty table gives zero counts';
+
+    -- Test 4: non-existent table returns no rows (and does not error)
+    ASSERT NOT EXISTS (SELECT 1 FROM platform.get_table_summary(999999)),
+        'Should return empty for non-existent table ID';
+    RAISE NOTICE 'Test 4 PASSED: non-existent table returns empty';
+
+    RAISE NOTICE 'All tests for get_table_summary passed!';
+
+EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE 'Test failed: %', SQLERRM;
+    RAISE;
+END $$;
+ROLLBACK;

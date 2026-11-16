@@ -724,3 +724,8 @@ source("tests/testthat/helper-connection.R")
 # try(get_series_table(c("DESEZ--PR--CB--N--Q", "BOGUS--CODE"), con, schema = "platform"))
 # dittodb::stop_db_capturing()
 
+start_db_capturing()
+con <- make_test_connection2()
+x <- sql_get_table_summary(20, con, schema = "platform")
+DBI::dbDisconnect(con)
+stop_db_capturing()

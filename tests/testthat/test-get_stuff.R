@@ -393,3 +393,19 @@ test_that("get_series_table fails loudly if the value column is not renamed as a
     regexp = "expected gdp, got period_id/nm"
   )
 })
+
+test_that("sql_get_table_summary works as expected", {
+  dittodb::with_mock_db({
+    con <- make_test_connection2()
+
+    summ <- sql_get_table_summary(20, con, "platform")
+    expect_s3_class(summ, "data.frame")
+    expect_named(summ, c("table_id", "code", "name", "source", "n_series", "n_vintages"))
+    expect_equal(nrow(summ), 1)
+    expect_equal(summ$code, "0400600S")
+    expect_type(summ$n_series, "integer")
+  })
+})
+
+
+
