@@ -514,7 +514,7 @@ sql_get_data_points_from_series_id <- function(con, series_id, new_name = NULL,
 #' @param vintage_id Integer vintage identifier
 #' @param schema Character string specifying the database schema
 #'
-#' @return POSIXct timestamp with CET timezone
+#' @return POSIXct timestamp with Ljubljana timezone
 #' @export
 sql_get_date_published_from_vintage <- function(vintage_id, con, schema = "platform") {
   result <- UMARimportR::sql_function_call(con,
@@ -522,7 +522,7 @@ sql_get_date_published_from_vintage <- function(vintage_id, con, schema = "platf
                                           list(p_vintage_id = vintage_id),
                                           schema)
   if (nrow(result) == 0) return(NULL)
-  lubridate::with_tz(result$published[1], "CET")
+  lubridate::with_tz(result$published[1], "Europe/Ljubljana")
 }
 
 #' Get the publication date from the vintage id
@@ -532,13 +532,13 @@ sql_get_date_published_from_vintage <- function(vintage_id, con, schema = "platf
 #' Deprecated: Use `\link[UMARaccessR]{sql_get_date_published_from_vintage}` instead.
 #'
 #' @inheritParams common_parameters
-#' @return POSIXct value with CET timezone
+#' @return POSIXct value with LJubljana timezone
 #' @export
 get_date_published_from_vintage <- function(vintage, con){
   .Deprecated("sql_get_date_published_from_vintage")
   DBI::dbGetQuery(con, sprintf(
     "select published from vintage where id = %f", vintage)) %>%
-    lubridate::with_tz("CET")
+    lubridate::with_tz("Europe/Ljubljana")
 }
 
 
