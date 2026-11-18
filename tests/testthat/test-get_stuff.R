@@ -33,6 +33,13 @@ dittodb::with_mock_db({
     out <- get_vintage_from_series_code("SURS--1700104S--2--2--Q", con)
     expect_equal(out[1,1], 59163)
     out <- get_date_published_from_vintage(1625, con)
+    x <- out[1, 1]
+    cat("\n--DIAG--\n")
+    dput(x)
+    print(as.numeric(x) - as.numeric(as.POSIXct("2022-10-27 10:30:00", tz = "CET")))
+    print(format(as.POSIXct("2022-10-27 10:30:00", tz = "CET"), "%Z %z"))
+    print(c(Sys.timezone(), Sys.getenv("TZ"), R.version.string))
+    print(utils::packageVersion("lubridate")) # only if used
     expect_equal(out[1,1], as.POSIXct("2022-10-27 10:30:00",  tz = "CET"))
     out <- get_last_period_from_vintage (1625, con)
     expect_equal(out[1,1], "2022M09")
